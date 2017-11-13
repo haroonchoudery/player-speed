@@ -1,0 +1,10 @@
+# ignore file types
+*.mp4
+*.record
+
+# extra files
+hart-code-resources/
+
+# photos not needed
+hart-code/Annotate/data/batch_0/**
+hart-code/Training_2/data/annotated/batch_0/**
