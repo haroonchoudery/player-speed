@@ -10,8 +10,6 @@ import reader
 frames_per_epoch = reader.get_total_images()
 steps_per_epoch = int(float(frames_per_epoch) / BATCH_SIZE)
 
-print('testing')
-
 print("Frames Per Epoch:", frames_per_epoch, "Steps Per Epoch", steps_per_epoch)
 
 def train():
