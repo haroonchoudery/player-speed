@@ -21,7 +21,7 @@ if not 'NUM_CLASSES' in globals():
 	CHANNELS = 3
 	AUGMENT = False
 	USE_DEPTH = False
-	BATCH_SIZE = 1 # 32
+	BATCH_SIZE = 32
 	NUM_EPOCHS = 5 # 10000
 	LEARNING_RATE = 0.001
 	NOT_EXIST = 0
@@ -29,7 +29,7 @@ if not 'NUM_CLASSES' in globals():
 	EVAL_DIR = os.path.join('models','model','eval')
 	DROPBOX_LOCATION = 'data'
 
-	NUM_DATA_BATCHES = fcount(DROPBOX_LOCATION)
+	NUM_DATA_BATCHES = 1 # fcount(DROPBOX_LOCATION)
 	CHECKPOINT_DIR = os.path.join('checkpoint')
 
 	#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'

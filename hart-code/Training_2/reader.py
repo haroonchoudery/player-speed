@@ -42,7 +42,7 @@ seq = iaa.Sequential([
 
 def augment(images, labels):
 	keypoints_on_images = []
-	
+
 	for label in labels:
 		keypoints = []
 		for i in range(NUM_POINTS):
@@ -52,9 +52,9 @@ def augment(images, labels):
 	seq_det = seq.to_deterministic() # call this for each batch again, NOT only once at the start
 	images_aug = seq_det.augment_images(images)
 	keypoints_aug = seq_det.augment_keypoints(keypoints_on_images)
-	
+
 	for idx1, keypoints_after in enumerate(keypoints_aug):
-		
+
 		for idx2, keypoint in enumerate(keypoints_after.keypoints):
 
 			if not (labels[idx1, idx2*NUM_DIMS] == NOT_EXIST and labels[idx1, idx2*NUM_DIMS+1] == NOT_EXIST):
@@ -72,7 +72,7 @@ def read_and_decode(filename_queue):
 	feature = {'image/encoded': tf.FixedLenFeature([], tf.string),
 	'image/object/class/label': tf.FixedLenFeature([NUM_CLASSES], tf.float32)}
 	# Create a list of filenames and pass it to a queue
-	
+
 	# Define a reader and read the next record
 	reader = tf.TFRecordReader()
 	_, serialized_example = reader.read(filename_queue)
@@ -93,7 +93,7 @@ def read_and_decode(filename_queue):
 	print('Build model with input:', image.shape)
 
 	label = features['image/object/class/label']
-	
+
 
 	# #preprocess
 	# if training:
@@ -107,7 +107,7 @@ def read_and_decode(filename_queue):
 	return image, label
 
 def inputs(record_name, batch_size, num_epochs):
-	
+
 	training = record_name == 'train'
 	filenames = []
 
@@ -116,7 +116,7 @@ def inputs(record_name, batch_size, num_epochs):
 		length = get_num_files(i)
 		if length > batch_size:
 			filenames.append(filename)
-	
+
 	print ('Loading:', filenames)
 	with tf.name_scope('input'):
 		filename_queue = tf.train.string_input_producer(filenames, num_epochs=num_epochs)
@@ -139,12 +139,12 @@ def main(_):
 		# Create a coordinator and run all QueueRunner objects
 		coord = tf.train.Coordinator()
 		threads = tf.train.start_queue_runners(coord=coord)
-		
+
 		for batch_index in range(10):
 			img, lbl = sess.run([images,labels])
 
 			images_aug, labels_aug = augment(img, lbl)
-			
+
 			# images_aug = images_aug * 255
 			# images_aug = images_aug.astype(np.uint8)
 
