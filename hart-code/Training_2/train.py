@@ -12,7 +12,6 @@ steps_per_epoch = int(float(frames_per_epoch) / BATCH_SIZE)
 
 print("Frames Per Epoch:", frames_per_epoch, "Steps Per Epoch", steps_per_epoch)
 
-
 def train():
 	user_input = ''
 	while (user_input != 'n' and user_input != 'y'):
@@ -21,14 +20,14 @@ def train():
 	do_load_model = user_input == 'y'
 	"""Train CIFAR-10 for a number of steps."""
 	with tf.Graph().as_default():
-		
+
 		current_epoch = tf.Variable(0)
 		is_training = tf.placeholder(tf.bool)
 		global_step = tf.contrib.framework.get_or_create_global_step()
 
 		# Force input pipeline to CPU:0 to avoid operations sometimes ending up on
 		# GPU and resulting in a slow down.
-		
+
 		with tf.device('/cpu:0'):
 			images, labels = reader.inputs('train', batch_size=BATCH_SIZE, num_epochs=NUM_EPOCHS)
 
@@ -36,13 +35,13 @@ def train():
 			# Initialize the variables (the trained variables and the epoch counter).
 			init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
 			sess.run(init_op)
-			
+
 			model = cnn.init_model(sess, do_load_model)
 
 			coord = tf.train.Coordinator()
 			threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-			
+
 			try:
 				losses = 0
 				step = 0
@@ -58,19 +57,19 @@ def train():
 
 					start_time = time.time()
 					loss_value, accuracy = model.train_on_batch(img, lbl)
-					
+
 					losses += loss_value
 					duration = time.time() - start_time
 					total_duration += duration
 					current_epoch = int(step / steps_per_epoch)
-					
+
 					print('Epoch: %d Step %d: loss = %.8f (%.3f sec)' % (current_epoch, step, loss_value, duration), end="\r")
 
 					if step % 100 == 0:
 						#print (model.predict(img)[0])
-						if step > 0: 
+						if step > 0:
 							losses = losses / 100.0
-						
+
 						print('Epoch: %d Step %d: loss = %.8f (%.3f sec)' % (current_epoch, step, losses, total_duration))
 						# if (losses < 0.0007 and step > 0):
 						# 	cnn.save_model(model)
@@ -78,22 +77,22 @@ def train():
 						losses = 0
 						total_duration = 0
 
-						
+
 
 						#train_loss_history[current_epoch] = loss_value
 
-					if step % 500 == 0 and step > 0: 
+					if step % 500 == 0 and step > 0:
 						cnn.save_model(model)
-						
+
 
 					step += 1
 
 					if current_epoch > NUM_EPOCHS:
 						coord.request_stop()
-					
+
 			except tf.errors.OutOfRangeError:
 				print('***Out of Range Error***')
-				
+
 			finally:
 				# When done, ask the threads to stop.
 				coord.request_stop()
