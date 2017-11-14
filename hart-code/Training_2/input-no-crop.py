@@ -22,8 +22,6 @@ import plotter
 #np.set_printoptions(threshold=np.nan)
 
 
-imageDim = WIDTH
-
 
 def create_tf_example(img_path, kp_path):
 	img = cv2.imread(img_path, 3)
@@ -37,73 +35,44 @@ def create_tf_example(img_path, kp_path):
 		kp.append([])
 
 
-	imgHeight, imgWidth, channels = img.shape
-	impad = int(imgWidth / 10)
-	tlx, tly, brx, bry = imgWidth+impad*2, imgHeight+impad*2, 0, 0
+	height, width, channels = img.shape
 
 	index = 0
 
 	for row in rows:
 		name = row[0]
-
 		if name != "img":
 			xf = float(row[1])
 			yf = float(row[2])
 			if math.isnan(xf) or math.isnan(yf):
 				return False, -1
-			x = int(xf * imgWidth)+impad
-			y = int(yf * imgHeight)+impad
+			x = int(xf * width)
+			y = int(yf * height)
 
-			if x < tlx: tlx = x
-			if y < tly: tly = y
-			if x > brx: brx = x
-			if y > bry: bry = y
 			kp[index] = [x,y]
 			index += 1
 
 
-	img = cv2.copyMakeBorder( img, impad, impad, impad, impad, cv2.BORDER_CONSTANT, (0,0,0))
-	imgHeight, imgWidth, channels = img.shape
+	scale = WIDTH/width
 
+	crop_img = cv2.resize(img, (HEIGHT, WIDTH), interpolation=cv2.INTER_CUBIC)
 
-	midx =(brx+tlx) / 2
-	midy = (bry+tly) / 2
+	print("Height:", HEIGHT)
+	print("Width:", WIDTH)
 
-	if imgHeight > imgWidth:
-		tlx = 0
-		brx = imgWidth - 1
-		tly = int(min(max(midy - (imgWidth/2), 0), imgHeight-imgWidth))
-		bry = tly + imgWidth
-	else:
-		tly = 0
-		bry = imgHeight - 1
-		tlx = int(min(max(midx - (imgHeight/2), 0), imgWidth-imgHeight))
-		brx = tlx + imgHeight
-
-
-	width = brx - tlx
-	height = bry - tly
-
-	crop_img = img[tly:bry, tlx:brx]
-
-	scale = imageDim/width
-
-	crop_img = cv2.resize(crop_img, (imageDim, imageDim), interpolation=cv2.INTER_CUBIC)
-
-
-	DEBUG = True
+	DEBUG = False
 
 	joints = []
 
 
 	for i, row in enumerate(kp):
 		px, py = row[0], row[1]
-		tx = (float(px - tlx) * scale)/imageDim
-		ty = (float(py - tly) * scale)/imageDim
+		tx = (float(px) * scale)/WIDTH
+		ty = (float(py) * scale)/HEIGHT
 		joints.append(tx)
 		joints.append(ty)
 
-		#cv2.circle(crop_img,(int(tx*imageDim),int(ty*imageDim)), 3, plot_colors[i], -1)
+		#cv2.circle(crop_img,(int(tx*WIDTH),int(ty*HEIGHT)), 3, plot_colors[i], -1)
 
 	if DEBUG:
 		plot_img = []
