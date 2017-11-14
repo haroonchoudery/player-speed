@@ -4,6 +4,7 @@
 
 # extra files
 hart-code-resources/
+__pycache__/
 
 # photos not needed
 hart-code/Annotate/data/batch_0/**
