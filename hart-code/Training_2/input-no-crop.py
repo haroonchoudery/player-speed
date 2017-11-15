@@ -55,7 +55,7 @@ def create_tf_example(img_path, kp_path):
 
 	scale = WIDTH/width
 
-	crop_img = cv2.resize(img, (HEIGHT, WIDTH), interpolation=cv2.INTER_CUBIC)
+	crop_img = cv2.resize(img, (WIDTH, HEIGHT), interpolation=cv2.INTER_CUBIC)
 
 	print("Height:", HEIGHT)
 	print("Width:", WIDTH)

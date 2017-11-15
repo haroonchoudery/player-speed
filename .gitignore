@@ -1,7 +1,7 @@
 # ignore file types
 *.mp4
-*.record
 *.pyc
+*.record
 
 # extra files
 hart-code-resources/
