@@ -81,7 +81,7 @@ def train():
 
 						#train_loss_history[current_epoch] = loss_value
 
-					if step % 500 == 0 and step > 0:
+					if step % 126 == 0 and step > 0:
 						cnn.save_model(model)
 
 

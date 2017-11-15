@@ -21,7 +21,7 @@ if not 'NUM_CLASSES' in globals():
 	CHANNELS = 3
 	AUGMENT = False
 	USE_DEPTH = False
-	BATCH_SIZE = 32
+	BATCH_SIZE = 8
 	NUM_EPOCHS = 5 # 10000
 	LEARNING_RATE = 0.001
 	NOT_EXIST = 0
