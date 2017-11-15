@@ -76,6 +76,7 @@ def train():
 
 						losses = 0
 						total_duration = 0
+						cnn.save_model(model)
 
 
 
@@ -89,8 +90,6 @@ def train():
 
 					if current_epoch > NUM_EPOCHS:
 						coord.request_stop()
-				
-				cnn.save_model(model)
 
 			except tf.errors.OutOfRangeError:
 				print('***Out of Range Error***')
