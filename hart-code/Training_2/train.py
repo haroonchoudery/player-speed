@@ -81,7 +81,7 @@ def train():
 
 						#train_loss_history[current_epoch] = loss_value
 
-					if step % 126 == 0 and step > 0:
+					if step % 127 == 0 and step > 0:
 						cnn.save_model(model)
 
 
@@ -89,6 +89,8 @@ def train():
 
 					if current_epoch > NUM_EPOCHS:
 						coord.request_stop()
+				
+				cnn.save_model(model)
 
 			except tf.errors.OutOfRangeError:
 				print('***Out of Range Error***')
