@@ -3,6 +3,9 @@
 *.pyc
 *.record
 
+# ignore DS_Store
+.DS_Store
+
 # extra files
 hart-code-resources/
 __pycache__/
