@@ -2,6 +2,7 @@
 *.mp4
 *.pyc
 *.record
+*.h5py
 
 # ignore DS_Store
 .DS_Store
