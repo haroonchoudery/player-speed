@@ -24,7 +24,7 @@ from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block
 
 
 def build_model():
-	input_shape = (WIDTH,HEIGHT,CHANNELS)
+	input_shape = (HEIGHT, WIDTH, CHANNELS)
 	#if CHANNELS == 1: input_shape = (WIDTH,HEIGHT)
 	model = MobileNetCustom(size=input_shape, classes=NUM_CLASSES).model
 	# model = mobile_net(
@@ -54,7 +54,7 @@ def build_model():
 	#opt = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9, nesterov=True)
 	#opt = keras.optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
 	#opt = keras.optimizers.RMSprop(lr=LEARNING_RATE, rho=0.9, epsilon=1e-08, decay=0.0)
-	
+
 	model.compile(loss='mse',
 		optimizer=opt,
 		metrics=['accuracy'])
@@ -75,7 +75,7 @@ def init_model(sess, do_load_model):
 		model_name = get_model_name(model.name)
 		model_path = os.path.join(CHECKPOINT_DIR, model_name + ".h5py")
 		model.load_weights(model_path)#model = load_model(model.name)
-	
+
 	model.summary()
 	return model
 
@@ -92,12 +92,12 @@ def load_model(name):
 	model_name = get_model_name(name)
 	model_path = os.path.join(CHECKPOINT_DIR, model_name + ".h5py")
 	print ('loading model:', model_path)
-	#custom_objects = {'DepthwiseConv2D': mobilenet.DepthwiseConv2D} #'relu6': mobilenet.relu6, 
+	#custom_objects = {'DepthwiseConv2D': mobilenet.DepthwiseConv2D} #'relu6': mobilenet.relu6,
 	return keras.models.load_model(model_path,custom_objects=custom_objects)
 
 
 # def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
-	
+
 #     channel_axis = 1 if K.image_data_format() == 'channels_first' else -1
 #     filters = int(filters * alpha)
 #     x = Conv2D(filters, kernel,
@@ -111,7 +111,7 @@ def load_model(name):
 
 # def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
 #                           depth_multiplier=1, strides=(1, 1), block_id=1):
-   
+
 #     channel_axis = 1 if K.image_data_format() == 'channels_first' else -1
 #     pointwise_conv_filters = int(pointwise_conv_filters * alpha)
 
@@ -141,14 +141,14 @@ def load_model(name):
 # 		input_tensor=None,
 # 		pooling=None,
 # 		classes=1000):
-	 
-
-# 	input_shape = (WIDTH, HEIGHT, CHANNELS) 
 
 
-	
+# 	input_shape = (WIDTH, HEIGHT, CHANNELS)
+
+
+
 # 	img_input = Input(shape=input_shape)
-	
+
 
 # 	x = _conv_block(img_input, 32, alpha, strides=(2, 2))
 # 	x = _depthwise_conv_block(x, 64, alpha, depth_multiplier, block_id=1)

@@ -85,7 +85,8 @@ def read_and_decode(filename_queue):
 	#image = image / 255.0
 
 	# Reshape image data into the original shape
-	img_shape = [WIDTH, HEIGHT, CHANNELS]
+	# img_shape = [WIDTH, HEIGHT, CHANNELS]
+	img_shape = [HEIGHT, WIDTH, CHANNELS]
 	#if CHANNELS == 1: img_shape.pop()
 	image = tf.reshape(image, img_shape)
 
