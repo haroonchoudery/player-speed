@@ -16,10 +16,8 @@ labels = [0.5185546875,0.546875,0.431640625,0.6927083333333334,0.0244140625,0.64
 image = cv2.imread(image_path, 1)
 
 height, width, channels = image.shape
-print(height)
 
-reshaped_image = image.reshape(width, height, 3)
-input_image = np.expand_dims(reshaped_image, axis=0)
+input_image = np.expand_dims(image, axis=0)
 
 with tf.Session() as sess:
     model = cnn.init_model(sess, do_load_model)
@@ -29,4 +27,4 @@ model.load_weights(weights_path)
 preds = model.predict(input_image)[0]
 print(preds)
 
-plotter.plot(cv2.cvtColor(reshaped_image,cv2.COLOR_BGR2RGB), labels, preds = preds)
+plotter.plot(cv2.cvtColor(image,cv2.COLOR_BGR2RGB), labels, preds = preds)
