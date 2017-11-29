@@ -6,7 +6,7 @@ plot_colors = ['g','r','b','c']
 def plot(image, labels, preds = None):
 
 	color_map = None
-	if CHANNELS == 1: 
+	if CHANNELS == 1:
 		image = image.reshape(WIDTH,HEIGHT)
 		color_map = 'gray'
 
