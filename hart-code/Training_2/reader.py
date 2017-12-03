@@ -34,7 +34,7 @@ seq = iaa.Sequential([
 	iaa.Crop(px=(0, 16)), # crop images from each side by 0 to 16px (randomly chosen)
 	iaa.Fliplr(0.5), # horizontally flip 50% of the images
 	#iaa.PerspectiveTransform(scale=(0.01, 0.075)),
-	#iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
+	iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
 	#iaa.Add((-10, 10)),#, per_channel=0.5), # change brightness of images (by -10 to 10 of original value)
 	iaa.Multiply((0.25, 1.5)), #, per_channel=0.5
 	iaa.Affine(rotate=(-10, 10), scale=(0.8, 1.00)) # rotate by -10 to +10 degrees, scale up to 80%)
@@ -54,9 +54,7 @@ def augment(images, labels):
 	keypoints_aug = seq_det.augment_keypoints(keypoints_on_images)
 
 	for idx1, keypoints_after in enumerate(keypoints_aug):
-
 		for idx2, keypoint in enumerate(keypoints_after.keypoints):
-
 			if not (labels[idx1, idx2*NUM_DIMS] == NOT_EXIST and labels[idx1, idx2*NUM_DIMS+1] == NOT_EXIST):
 				labels[idx1, idx2*NUM_DIMS] = float(keypoint.x / WIDTH)
 				labels[idx1, idx2*NUM_DIMS+1] = float(keypoint.y / HEIGHT)
