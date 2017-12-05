@@ -47,7 +47,7 @@ def augment(images, labels):
 		keypoints = []
 		for i in range(NUM_POINTS):
 			keypoints.append(ia.Keypoint(x=label[i*NUM_DIMS]*WIDTH, y=label[i*NUM_DIMS+1]*HEIGHT))
-		keypoints_on_images.append(ia.KeypointsOnImage(keypoints, shape=(WIDTH,HEIGHT,3)))
+		keypoints_on_images.append(ia.KeypointsOnImage(keypoints, shape=(HEIGHT, WIDTH,3)))
 
 	seq_det = seq.to_deterministic() # call this for each batch again, NOT only once at the start
 	images_aug = seq_det.augment_images(images)
