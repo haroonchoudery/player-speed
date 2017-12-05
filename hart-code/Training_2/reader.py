@@ -37,7 +37,7 @@ seq = iaa.Sequential([
 	iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
 	#iaa.Add((-10, 10)),#, per_channel=0.5), # change brightness of images (by -10 to 10 of original value)
 	iaa.Multiply((0.25, 1.5)), #, per_channel=0.5
-	iaa.Affine(rotate=(-10, 10), scale=(0.8, 1.00)) # rotate by -10 to +10 degrees, scale up to 80%)
+	iaa.Affine(rotate=(-10, 10), scale=(0.75, 1.25)) # rotate by -10 to +10 degrees, scale up to +/- 25%)
 ])
 
 def augment(images, labels):
