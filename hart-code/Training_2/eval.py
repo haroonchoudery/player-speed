@@ -32,7 +32,7 @@ def show_prediction(images, labels, show_labels):
 			for qr in tf.get_collection(tf.GraphKeys.QUEUE_RUNNERS):
 				threads.extend(qr.create_threads(sess, coord=coord, daemon=True, start=True))
 
-			
+
 			step = 0
 			while not coord.should_stop():
 				for batch_index in range(BATCH_SIZE):
@@ -46,11 +46,11 @@ def show_prediction(images, labels, show_labels):
 					# else:
 					# 	img = img.astype(np.float32)
 					# 	img = img / 255.0
-						
-					lgt = model.predict(img, BATCH_SIZE)
-					
 
-					
+					lgt = model.predict(img, BATCH_SIZE)
+
+
+
 					# img = img * 255
 					# img = img.astype(np.uint8)
 
@@ -59,32 +59,35 @@ def show_prediction(images, labels, show_labels):
 					for j in range(3):
 						image = img[j]
 						color_map = None
-						if CHANNELS == 1: 
+						if CHANNELS == 1:
 							image = image.reshape(WIDTH,HEIGHT)
 							color_map = 'gray'
 						plt.imshow(image, cmap=color_map)
 						for i in range(NUM_POINTS):
 							plot_colors = ['g','r','b','c']
-							
 
-							if show_labels: 
-								plt.plot(lbl[j][i*NUM_DIMS]*WIDTH, lbl[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] +'x')	
+
+							if show_labels:
+								print("Width:", WIDTH)
+								print("Height:", HEIGHT)
+								print(lgt[j][i*NUM_DIMS])
+								plt.plot(lbl[j][i*NUM_DIMS]*WIDTH, lbl[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] +'x')
 							plt.plot(lgt[j][i*NUM_DIMS]*WIDTH, lgt[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] + 'o')
-						
+
 						# if (show_labels):
 						# 	a = lgt[j][0*NUM_DIMS+2]-lgt[j][1*NUM_DIMS+2]
 						# 	b = lbl[j][0*NUM_DIMS+2]-lbl[j][1*NUM_DIMS+2]
 						# 	print('pred: '+str(a),'act:' +str(b) ,'diff:'+ str(a-b))
 
 						plt.show()
-				
+
 		except Exception as e:  # pylint: disable=broad-except
 			coord.request_stop(e)
 
 		coord.request_stop()
 		coord.join(threads, stop_grace_period_secs=10)
 
-		
+
 def single_image_loader():
 	filename_queue = tf.train.string_input_producer(tf.train.match_filenames_once(os.path.join("test_images","*.jpg")))
 
@@ -100,8 +103,8 @@ def single_image_loader():
 	# Decode the image as a JPEG file, this will turn it into a Tensor which we can
 	# then use in training.
 	image = tf.image.decode_jpeg(image_file, channels=CHANNELS)
-	
-	img_shape = [WIDTH, HEIGHT, CHANNELS]
+
+	img_shape = [HEIGHT, WIDTH, CHANNELS]
 	if CHANNELS == 1: img_shape.pop()
 	image = tf.reshape(image, img_shape)
 
@@ -114,7 +117,7 @@ def single_image_loader():
 		min_after_dequeue=256)
 
 
-	
+
 	labels = tf.placeholder(tf.float32, [BATCH_SIZE, NUM_CLASSES])
 	return images, labels
 
