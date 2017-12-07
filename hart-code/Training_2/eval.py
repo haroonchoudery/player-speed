@@ -7,6 +7,7 @@ import tensorflow as tf
 from datetime import datetime
 
 import math
+import plotter
 import matplotlib.pyplot as plt
 
 import cnn
@@ -43,43 +44,40 @@ def show_prediction(images, labels, show_labels):
 
 					if AUGMENT and show_labels:
 						img, lbl = reader.augment(img,lbl)
+
 					# else:
 					# 	img = img.astype(np.float32)
 					# 	img = img / 255.0
 
 					lgt = model.predict(img, BATCH_SIZE)
 
-
-
 					# img = img * 255
 					# img = img.astype(np.uint8)
 
+					for j in range(BATCH_SIZE):
+						plotter.plot(img[j],lbl[j],lgt[j])
 
-
-					for j in range(3):
-						image = img[j]
-						color_map = None
-						if CHANNELS == 1:
-							image = image.reshape(WIDTH,HEIGHT)
-							color_map = 'gray'
-						plt.imshow(image, cmap=color_map)
-						for i in range(NUM_POINTS):
-							plot_colors = ['g','r','b','c']
-
-
-							if show_labels:
-								print("Width:", WIDTH)
-								print("Height:", HEIGHT)
-								print(lgt[j][i*NUM_DIMS])
-								plt.plot(lbl[j][i*NUM_DIMS]*WIDTH, lbl[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] +'x')
-							plt.plot(lgt[j][i*NUM_DIMS]*WIDTH, lgt[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] + 'o')
-
-						# if (show_labels):
-						# 	a = lgt[j][0*NUM_DIMS+2]-lgt[j][1*NUM_DIMS+2]
-						# 	b = lbl[j][0*NUM_DIMS+2]-lbl[j][1*NUM_DIMS+2]
-						# 	print('pred: '+str(a),'act:' +str(b) ,'diff:'+ str(a-b))
-
-						plt.show()
+					# for j in range(3):
+					# 	image = img[j]
+					# 	color_map = None
+					# 	if CHANNELS == 1:
+					# 		image = image.reshape(WIDTH,HEIGHT)
+					# 		color_map = 'gray'
+					# 	plt.imshow(image, cmap=color_map)
+					# 	for i in range(NUM_POINTS):
+					# 		plot_colors = ['g','r','b','c']
+                    #
+                    #
+					# 		if show_labels:
+					# 			plt.plot(lbl[j][i*NUM_DIMS]*WIDTH, lbl[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] +'x')
+					# 		plt.plot(lgt[j][i*NUM_DIMS]*WIDTH, lgt[j][i*NUM_DIMS+1]*HEIGHT, plot_colors[i] + 'o')
+                    #
+					# 	# if (show_labels):
+					# 	# 	a = lgt[j][0*NUM_DIMS+2]-lgt[j][1*NUM_DIMS+2]
+					# 	# 	b = lbl[j][0*NUM_DIMS+2]-lbl[j][1*NUM_DIMS+2]
+					# 	# 	print('pred: '+str(a),'act:' +str(b) ,'diff:'+ str(a-b))
+                    #
+					# 	plt.show()
 
 		except Exception as e:  # pylint: disable=broad-except
 			coord.request_stop(e)
