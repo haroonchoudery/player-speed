@@ -11,11 +11,12 @@ from keras import backend as K
 import keras.applications.mobilenet as mobilenet
 from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block, _conv_block
 class InceptionResNetV2_custom():
-    def __init__(self, classes=(1000)):
+    def __init__(self,size=(256,144,3),classes=(1000)):
         self.classes = classes
+        self.new_model(size)
 
-    def new_model(self):
-        self.prev_model = keras.applications.inception_resnet_v2.InceptionResNetV2(include_top=False, weights=None, input_tensor=None, input_shape=(256,144,3), pooling=None, classes=1000)
+    def new_model(self,size):
+        self.prev_model = keras.applications.inception_resnet_v2.InceptionResNetV2(include_top=False, weights=None, input_tensor=None, input_shape=size, pooling=None, classes=1000)
         self.x = self.prev_model.output
         self.x=AveragePooling2D(pool_size=(2,2), strides=(1, 1))(self.x)
         self.x = Flatten()(self.x)
