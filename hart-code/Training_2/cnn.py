@@ -8,7 +8,9 @@ import tempfile
 
 from datetime import datetime
 
-from mobilenet_custom import MobileNetCustom
+# from mobilenet_custom import MobileNetCustom
+from InceptionResNetV2_custom import InceptionResNetV2_custom
+
 import keras
 
 from keras.layers import Input, Reshape, Conv2D, SeparableConv2D, BatchNormalization, GlobalAveragePooling2D, GlobalMaxPooling2D, AveragePooling2D
@@ -26,7 +28,7 @@ from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block
 def build_model():
 	input_shape = (HEIGHT, WIDTH, CHANNELS)
 	#if CHANNELS == 1: input_shape = (WIDTH,HEIGHT)
-	model = MobileNetCustom(size=input_shape, classes=NUM_CLASSES).model
+	model = InceptionResNetV2_custom(size=input_shape, classes=NUM_CLASSES).model
 	# model = mobile_net(
 	# 	input_shape=None,
 	# 	alpha=2.0,

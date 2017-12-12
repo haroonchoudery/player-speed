@@ -20,6 +20,5 @@ class InceptionResNetV2_custom():
         self.x = self.prev_model.output
         self.x=AveragePooling2D(pool_size=(2,2), strides=(1, 1))(self.x)
         self.x = Flatten()(self.x)
-        self.x = Dense(1000)(self.x)
+        self.x = Dense(self.classes)(self.x)
         self.model = Model(inputs=self.prev_model.input,outputs=self.x)
-
