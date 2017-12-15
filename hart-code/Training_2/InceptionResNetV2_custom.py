@@ -16,7 +16,7 @@ class InceptionResNetV2_custom():
         self.new_model(size)
 
     def new_model(self,size):
-        self.prev_model = keras.applications.inception_resnet_v2.InceptionResNetV2(include_top=False, weights=None, input_tensor=None, input_shape=size, pooling=None, classes=1000)
+        self.prev_model = keras.applications.inception_resnet_v2.InceptionResNetV2(include_top=False, weights=None, input_tensor=None, input_shape=size, pooling=None, classes=self.classes)
         self.x = self.prev_model.output
         self.x=AveragePooling2D(pool_size=(2,2), strides=(1, 1))(self.x)
         self.x = Flatten()(self.x)
