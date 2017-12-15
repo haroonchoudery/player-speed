@@ -14,7 +14,7 @@ class xception_custom():
         self.new_model(size)
 
     def new_model(self,size):
-        self.prev_model = K.applications.xception.Xception(include_top=False, weights=None, input_tensor=None, input_shape=size, pooling=None, classes=self.classes)
+        self.prev_model = keras.applications.xception.Xception(include_top=False, weights=None, input_tensor=None, input_shape=size, pooling=None, classes=self.classes)
         self.x = self.prev_model.output
         self.x=AveragePooling2D(pool_size=(2,2), strides=(1, 1))(self.x)
         self.x = Flatten()(self.x)
