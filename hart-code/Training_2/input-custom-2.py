@@ -38,6 +38,7 @@ def create_tf_example(img_path, kp_path):
 
 
 	height, width, channels = img.shape
+	impad = int(width / 10)
 
 	index = 0
 
@@ -48,8 +49,8 @@ def create_tf_example(img_path, kp_path):
 			yf = float(row[2])
 			if math.isnan(xf) or math.isnan(yf):
 				return False, -1
-			x = int(xf * width)
-			y = int(yf * height)
+			x = int(xf * width) + impad
+			y = int(yf * height) + impad
 
 			# kp = Keypoints (pixel coordinates)
 			kp[index] = [x,y]
@@ -58,10 +59,21 @@ def create_tf_example(img_path, kp_path):
 
 	scale = WIDTH/width
 
+	img = cv2.copyMakeBorder(img, impad, impad, impad, impad, cv2.BORDER_CONSTANT, (0,0,0))
+	imgHeight, imgWidth, channels = img.shape
 
-	# crop_img = img.reshape(img_shape)
-	img_shape = [HEIGHT, WIDTH, CHANNELS]
-	crop_img = cv2.resize(img, (WIDTH, HEIGHT), interpolation=cv2.INTER_CUBIC)
+	x = []
+	y = []
+
+	for coord in kp:
+		x.append(coord[0])
+		y.append(coord[1])
+
+	# Add dynamic padding to fill in remainder of image size (WIDTH, HEIGHT)
+	pad_x = WIDTH - (x.max() - x.min()) / 2
+	pad_y = HEIGHT - (y.max() - y.min()) / 2
+
+	crop_img = img[y.max()+impad+pad_y:y.min()+impad-pad_y, x.max()+impad+pad_x:x.min()+impad-pad_x]
 
 	DEBUG = False
 
