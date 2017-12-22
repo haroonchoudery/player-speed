@@ -51,11 +51,13 @@ def create_tf_example(img_path, kp_path):
 			x = int(xf * width)
 			y = int(yf * height)
 
+			# kp = Keypoints (pixel coordinates)
 			kp[index] = [x,y]
 			index += 1
 
 
 	scale = WIDTH/width
+
 
 	# crop_img = img.reshape(img_shape)
 	img_shape = [HEIGHT, WIDTH, CHANNELS]
