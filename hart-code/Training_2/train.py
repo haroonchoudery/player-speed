@@ -48,9 +48,7 @@ def train():
 				total_duration = 0
 				print("still working...")
 				while not coord.should_stop():
-					print("it's working")
 					img, lbl = sess.run([images, labels])
-					print("still")
 					if AUGMENT:
 						img, lbl = reader.augment(img,lbl)
 					# else:
