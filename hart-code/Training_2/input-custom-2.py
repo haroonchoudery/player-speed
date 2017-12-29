@@ -38,7 +38,7 @@ def create_tf_example(img_path, kp_path):
 
 
 	height, width, channels = img.shape
-	impad = int(width / 10)
+	impad = int(width / 2) # int(width / 10)
 
 	index = 0
 
@@ -69,25 +69,51 @@ def create_tf_example(img_path, kp_path):
 		x.append(coord[0])
 		y.append(coord[1])
 
+	minx = min(x)
+	maxx = max(x)
+	miny = min(y)
+	maxy = max(y)
+
 	# Add dynamic padding to fill in remainder of image size (WIDTH, HEIGHT)
-	pad_x = WIDTH - (x.max() - x.min()) / 2
-	pad_y = HEIGHT - (y.max() - y.min()) / 2
+	# Can be float (in case dividing by two makes padding a fraction)
+	pad_x = (WIDTH - (maxx - minx)) / 2
+	pad_y = (HEIGHT - (maxy - miny)) / 2
 
-	crop_img = img[y.max()+impad+pad_y:y.min()+impad-pad_y, x.max()+impad+pad_x:x.min()+impad-pad_x]
+	left_crop = round(minx - pad_x)
+	right_crop = round(maxx + pad_x)
+	top_crop = round(miny - pad_y)
+	bottom_crop = round(maxy + pad_y)
 
-	DEBUG = False
+	# Crop padded image with dynamic padding to fill in remaining pixels from HEIGHT and WIDTH
+	crop_img = img[top_crop:bottom_crop, left_crop:right_crop]
+	crop_img = cv2.resize(crop_img, (R_WIDTH, R_HEIGHT), interpolation=cv2.INTER_CUBIC)
+
+	# Created adjusted coordinates with cropped images
+	kpn = [];
+	for i in range(NUM_POINTS):
+		kpn.append([])
+
+	for index in range(len(kpn)):
+		x = kp[index][0] - left_crop
+		y = kp[index][1] - top_crop
+		kpn[index] = [x, y]
 
 	joints = []
 
+	scale = R_WIDTH / WIDTH
 
-	for i, row in enumerate(kp):
+	# Convert from pixel coordinates to normalized coordinates
+	for i, row in enumerate(kpn):
 		px, py = row[0], row[1]
 		tx = (float(px) * scale)/WIDTH
 		ty = (float(py) * scale)/HEIGHT
 		joints.append(tx)
 		joints.append(ty)
 
-		#cv2.circle(crop_img,(int(tx*WIDTH),int(ty*HEIGHT)), 3, plot_colors[i], -1)
+	height  = R_HEIGHT
+	width = R_WIDTH
+
+	DEBUG = False
 
 	if DEBUG:
 		plot_img = []
@@ -98,8 +124,6 @@ def create_tf_example(img_path, kp_path):
 		plotter.plot(plot_img,joints)
 
 	crop_img = crop_img.astype(np.uint8)
-
-
 
 
 	channel_transform = cv2.COLOR_BGR2RGB

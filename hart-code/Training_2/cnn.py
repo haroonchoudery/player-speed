@@ -26,7 +26,7 @@ from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block
 
 
 def build_model():
-	input_shape = (HEIGHT, WIDTH, CHANNELS)
+	input_shape = (R_HEIGHT, R_WIDTH, CHANNELS)
 	#if CHANNELS == 1: input_shape = (WIDTH,HEIGHT)
 	model = xception_custom(size=input_shape, classes=NUM_CLASSES).model
 	# model = mobile_net(

@@ -15,12 +15,17 @@ import plotter
 import PIL
 from PIL import Image
 
-def windows(img,win_width,win_height):
-    imgWidth = 1024
-    imgHeight = 576
+def windows(img_path,win_width,win_height):
 
-    windowWidth = win_width
-    windowHeight = win_height
+    img = cv2.imread(img_path)
+
+    imgWidth = 512
+    imgHeight = 288
+
+    img = cv2.resize(crop_img, (R_WIDTH, R_HEIGHT), interpolation=cv2.INTER_CUBIC)
+
+    windowWidth = 400
+    windowHeight = 150
 
     # number of windows in each direction — total windows = product of these
     numXWin = 10
@@ -46,7 +51,3 @@ def windows(img,win_width,win_height):
             wpercent = (basewidth / float(cropped.size[0]))
              hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
             scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
-
-
-
-
