@@ -52,7 +52,7 @@ def build_model():
 	#model = build_sequential()
 
 	#opt = keras.optimizers.Adagrad(lr=LEARNING_RATE, epsilon=1e-08, decay=0.0)
-	opt = keras.optimizers.Adam(lr=LEARNING_RATE, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0)
+	opt = keras.optimizers.Adam(lr=LEARNING_RATE, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
 	#opt = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9, nesterov=True)
 	#opt = keras.optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
 	#opt = keras.optimizers.RMSprop(lr=LEARNING_RATE, rho=0.9, epsilon=1e-08, decay=0.0)
