@@ -64,6 +64,12 @@ def train():
 					duration = time.time() - start_time
 					total_duration += duration
 					current_epoch = int(step / steps_per_epoch)
+					lr = model.optimizer.lr
+					decay = model.optimizer.decay
+					iterations = model.optimizer.iterations
+					lr_with_decay = lr / (1. + decay * K.cast(iterations, K.dtype(decay)))
+					loss_str = " Learning Rate: " + str(K.eval(lr_with_decay))
+					print(loss_str)
 
 					print('Epoch: %d Step %d: loss = %.8f (%.3f sec)' % (current_epoch, step, loss_value, duration), end="\r")
 
