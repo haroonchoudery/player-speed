@@ -6,6 +6,7 @@ from init import *
 import tensorflow as tf
 import cnn
 import reader
+from keras import backend as K
 
 frames_per_epoch = reader.get_total_images()
 steps_per_epoch = int(float(frames_per_epoch) / BATCH_SIZE)
