@@ -41,6 +41,8 @@ def train():
 			coord = tf.train.Coordinator()
 			threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
+			global_loss = 100
+
 
 			try:
 				losses = 0
@@ -70,21 +72,13 @@ def train():
 						if step > 0:
 							losses = losses / 100.0
 
-						print('Epoch: %d Step %d: loss = %.8f (%.3f sec)' % (current_epoch, step, losses, total_duration))
-						# if (losses < 0.0007 and step > 0):
-						# 	cnn.save_model(model)
+						if losses < global_loss:
+							print('Epoch: %d Step %d: loss = %.8f (%.3f sec)' % (current_epoch, step, losses, total_duration))
+							global_loss = losses
+							cnn.save_model(model)
 
 						losses = 0
 						total_duration = 0
-						cnn.save_model(model)
-
-
-
-						#train_loss_history[current_epoch] = loss_value
-
-					if step % 30 == 0 and step > 0:
-						cnn.save_model(model)
-
 
 					step += 1
 
