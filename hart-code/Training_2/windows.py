@@ -18,14 +18,15 @@ from PIL import Image
 def windows(img_path,win_width,win_height):
 
     img = cv2.imread(img_path)
+    height, width, channels = img.shape
 
-    imgWidth = 512
-    imgHeight = 288
+    imgWidth = width / 2
+    imgHeight = height / 2
 
-    img = cv2.resize(crop_img, (R_WIDTH, R_HEIGHT), interpolation=cv2.INTER_CUBIC)
+    img = cv2.resize(img, (imgWidth, imgHeight), interpolation=cv2.INTER_CUBIC)
 
-    windowWidth = 400
-    windowHeight = 150
+    windowWidth = R_WIDTH
+    windowHeight = R_HEIGHT
 
     # number of windows in each direction — total windows = product of these
     numXWin = 10
@@ -40,14 +41,15 @@ def windows(img_path,win_width,win_height):
     bestPredictionScore = 0
     bestPredictions = []
 
-    basewidth = 288 #original image base*2
+    basewidth = 288 # original image base*2
+
     for i in range(0, numXWin):
         for j in range(0, numYWin):
             cropX = i * winXIncrement
             cropY = j * winYIncrement
             cropped = img[cropX:cropX+windowWidth,cropY:cropY+windowHeight,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
 
-            #now we scale the cropped image
-            wpercent = (basewidth / float(cropped.size[0]))
-             hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
-            scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+            # #now we scale the cropped image
+            # wpercent = (basewidth / float(cropped.size[0]))
+            #  hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
+            # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
