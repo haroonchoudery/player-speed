@@ -72,16 +72,6 @@ def create_tf_example(img_path, kp_path):
 			joints.append(ty)
 
 		crop_img = crop_img.astype(np.uint8)
-		tf_example = tf.train.Example(features=tf.train.Features(feature={
-			'image/height': dataset_util.int64_feature(height),
-			'image/width': dataset_util.int64_feature(width),
-			'image/encoded': dataset_util.bytes_feature(tf.compat.as_bytes(crop_img.tostring())),
-			'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-			'image/object/class/label': dataset_util.float_list_feature(joints)
-		}))
-
-
-
 
 	else:
 		scale = WIDTH/width
@@ -137,36 +127,35 @@ def create_tf_example(img_path, kp_path):
 			joints.append(tx)
 			joints.append(ty)
 
-		height  = R_HEIGHT
-		width = R_WIDTH
+	height  = R_HEIGHT
+	width = R_WIDTH
 
-		DEBUG = False
+	DEBUG = False
 
-		if DEBUG:
-			plot_img = []
-			if CHANNELS == 1:
-				plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2GRAY)
-			else:
-				plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2RGB)
-			plotter.plot(plot_img,joints)
-
-		crop_img = crop_img.astype(np.uint8)
-
-
-		channel_transform = cv2.COLOR_BGR2RGB
-		if CHANNELS == 1: channel_transform = cv2.COLOR_BGR2YUV
-		crop_img = cv2.cvtColor(crop_img, channel_transform)
+	if DEBUG:
+		plot_img = []
 		if CHANNELS == 1:
-			y,u,v = cv2.split(crop_img)
-			crop_img = y
+			plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2GRAY)
+		else:
+			plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2RGB)
+		plotter.plot(plot_img,joints)
 
-		tf_example = tf.train.Example(features=tf.train.Features(feature={
-			'image/height': dataset_util.int64_feature(height),
-			'image/width': dataset_util.int64_feature(width),
-			'image/encoded': dataset_util.bytes_feature(tf.compat.as_bytes(crop_img.tostring())),
-			'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-			'image/object/class/label': dataset_util.float_list_feature(joints)
-		}))
+	crop_img = crop_img.astype(np.uint8)
+
+
+	channel_transform = cv2.COLOR_BGR2RGB
+	if CHANNELS == 1: channel_transform = cv2.COLOR_BGR2YUV
+	crop_img = cv2.cvtColor(crop_img, channel_transform)
+	if CHANNELS == 1:
+		y,u,v = cv2.split(crop_img)
+		crop_img = y
+
+	tf_example = tf.train.Example(features=tf.train.Features(feature={
+	'image/height': dataset_util.int64_feature(height),
+	'image/width': dataset_util.int64_feature(width),
+	'image/encoded': dataset_util.bytes_feature(tf.compat.as_bytes(crop_img.tostring())),
+	'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
+	'image/object/class/label': dataset_util.float_list_feature(joints)}))
 
 	return True, tf_example
 

@@ -15,7 +15,7 @@ import plotter
 import PIL
 from PIL import Image
 
-def windows(img_path,win_width,win_height):
+def windows(img_path,win_width,win_height,model):
 
     img = cv2.imread(img_path)
     height, width, channels = img.shape
@@ -53,3 +53,8 @@ def windows(img_path,win_width,win_height):
             # wpercent = (basewidth / float(cropped.size[0]))
             #  hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
             # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+
+
+            model.predict
+def __init__():
+    model = cnn.init_model(sess, True)
