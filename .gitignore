@@ -14,6 +14,8 @@ __pycache__/
 # photos not needed
 hart-code/Annotate/data/batch_0/**
 hart-code/Training_2/data/annotated/batch_0/**
+hart-code/Annotate/data/batch_1/**
+hart-code/Training_2/data/annotated/batch_1/**
 
 # Jupyter
 .ipynb_checkpoints
