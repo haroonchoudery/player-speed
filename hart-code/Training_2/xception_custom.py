@@ -45,6 +45,7 @@ from tensorflow.python.keras._impl.keras.layers import Activation
 from tensorflow.python.keras._impl.keras.layers import BatchNormalization
 from tensorflow.python.keras._impl.keras.layers import Conv2D
 from tensorflow.python.keras._impl.keras.layers import Dense
+from tensorflow.python.keras._impl.keras.layers import AveragePooling2D
 from tensorflow.python.keras._impl.keras.layers import GlobalAveragePooling2D
 from tensorflow.python.keras._impl.keras.layers import GlobalMaxPooling2D
 from tensorflow.python.keras._impl.keras.layers import Input
