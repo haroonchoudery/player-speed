@@ -265,7 +265,7 @@ def Xception(include_top=True,
   x = Activation('relu', name='block14_sepconv2_act')(x)
 
   if include_top:
-      x = AveragePooling2D(pool_size=(7,7),strides=(1,1))(x) #might have to adjust those params
+      x = AveragePooling2D(pool_size=(2,2),strides=(1,1))(x) #might have to adjust those params
       x = Dropout(dropout, name='dropout')(x)
       x = Flatten()(x)
       x = Dense(classes)(x)
