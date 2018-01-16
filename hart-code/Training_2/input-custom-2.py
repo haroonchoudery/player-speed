@@ -47,7 +47,7 @@ def create_tf_example(img_path, kp_path):
 		if name != "img":
 			xf = float(row[1])
 			yf = float(row[2])
-			if math.isnan(xf) or math.isnan(yf):
+			if xf == 0 and yf == 0:
 				x = -1
 				y = -1
 				kp[index] = [x, y]
@@ -122,8 +122,8 @@ def create_tf_example(img_path, kp_path):
 		# Convert from pixel coordinates to normalized coordinates
 		for i, row in enumerate(kpn):
 			px, py = row[0], row[1]
-			tx = (float(px) * scale)/WIDTH
-			ty = (float(py) * scale)/HEIGHT
+			tx = (float(px) * scale)/R_WIDTH
+			ty = (float(py) * scale)/R_HEIGHT
 			joints.append(tx)
 			joints.append(ty)
 

@@ -6,11 +6,11 @@ import os
 import tensorflow as tf
 
 
-image_path = '/Users/haroonchoudery/Desktop/frame_000613.jpg'
-weights_path = os.path.join('checkpoint', 'mobilenet_custom_marker_3_1024.h5py')
+image_path = '/Users/haroonchoudery/Desktop/frame_000396.jpg'
+weights_path = os.path.join('checkpoint', 'model_1_marker_3_800.h5py')
 do_load_model = False
 
-labels = [0.5986328125,0.6197916666666666,0.48828125,0.4947916666666667,0.791015625,0.4496527777777778,0.9462890625,0.5590277777777778]
+labels = [.5,.5,.5,.5,.5,.5,.5,.5]
 
 image = cv2.imread(image_path, 1)
 

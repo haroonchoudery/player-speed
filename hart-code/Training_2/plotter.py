@@ -12,8 +12,8 @@ def plot(image, labels, preds = None):
 
 	plt.imshow(image, cmap=color_map)
 	for i in range(NUM_POINTS):
-		plt.plot(labels[i*NUM_DIMS]*WIDTH, labels[i*NUM_DIMS+1]*HEIGHT, plot_colors[i]+'o')
-		if (preds != None):
-			plt.plot(preds[i*NUM_DIMS]*WIDTH, preds[i*NUM_DIMS+1]*HEIGHT, plot_colors[i]+'x')
+		plt.plot(labels[i*NUM_DIMS]*R_WIDTH, labels[i*NUM_DIMS+1]*R_HEIGHT, plot_colors[i]+'o')
+		if (preds.any() != None):
+			plt.plot(preds[i*NUM_DIMS]*R_WIDTH, preds[i*NUM_DIMS+1]*R_HEIGHT, plot_colors[i]+'x')
 
 	plt.show()
