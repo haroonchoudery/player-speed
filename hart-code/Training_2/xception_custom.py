@@ -45,6 +45,7 @@ from tensorflow.python.keras._impl.keras.layers import Activation
 from tensorflow.python.keras._impl.keras.layers import BatchNormalization
 from tensorflow.python.keras._impl.keras.layers import Conv2D
 from tensorflow.python.keras._impl.keras.layers import Dense
+from tensorflow.python.keras._impl.keras.layers import Dropout
 from tensorflow.python.keras._impl.keras.layers import AveragePooling2D
 from tensorflow.python.keras._impl.keras.layers import GlobalAveragePooling2D
 from tensorflow.python.keras._impl.keras.layers import GlobalMaxPooling2D
@@ -266,7 +267,6 @@ def Xception(include_top=True,
 
   if include_top:
       x = AveragePooling2D(pool_size=(2,2),strides=(1,1))(x) #might have to adjust those params
-      x = Dropout(dropout, name='dropout')(x)
       x = Flatten()(x)
       x = Dense(classes)(x)
   else:
