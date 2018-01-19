@@ -11,6 +11,7 @@ import imgaug as ia
 from scipy import misc
 from imgaug import augmenters as iaa
 import random
+import cnn
 import plotter
 import PIL
 from PIL import Image
@@ -67,11 +68,14 @@ def __init__():
     win_width = R_WIDTH
     win_height = R_HEIGHT
 
-    model = cnn.init_model(sess, True)
-
     lbl = [0.82421875,0.6649305555555556,0.705078125,0.8506944444444444,0.2138671875,0.7552083333333334,0.392578125,0.5954861111111112]
 
+    with tf.Session(graph = graph) as sess:
+        init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+        # Initialize the variables (the trained variables and the epoch counter).
+        sess.run(init_op)
+        model = cnn.init_model(sess, False)
 
-    predict, cropped = windows(img_path, win_width,win_height,model)
-    
-    plotter.plot(cropped, lbl, predict)
+        predict, cropped = windows(img_path, win_width,win_height,model)
+
+        plotter.plot(cropped, lbl, predict)
