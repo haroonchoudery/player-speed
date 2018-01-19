@@ -63,6 +63,7 @@ def windows(img_path,win_width,win_height,model):
                     bestCropX = cropX
                     bestCropY = cropY
                     bestPredictions = prediction
+                    return predict, cropped
 
             #find center of window
             #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
