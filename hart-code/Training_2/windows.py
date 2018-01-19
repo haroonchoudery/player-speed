@@ -1,4 +1,4 @@
-import pandas as pd
+
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
@@ -56,11 +56,31 @@ def windows(img_path,win_width,win_height,model):
             # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
 
 
-
-            predictions.append(model.predict)
+            predict = model.predict(cropped)
+            predictions.append(predict)
+            for prediction in predictions:
+                if all(points > 0 for points in prediction):
+                    bestCropX = cropX
+                    bestCropY = cropY
+                    bestPredictions = prediction
 
             #find center of window
-            window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
+            #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
 
 def __init__():
-    model = cnn.init_model(sess, True)
+    img_path = 'window_images/frame_001197.jpg'
+    win_width = R_WIDTH
+    win_height = R_HEIGHT
+
+    lbl = [0.82421875, 0.6649305555555556, 0.705078125, 0.8506944444444444, 0.2138671875, 0.7552083333333334,
+           0.392578125, 0.5954861111111112]
+
+    with tf.Session(graph=graph) as sess:
+        init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+        # Initialize the variables (the trained variables and the epoch counter).
+        sess.run(init_op)
+        model = cnn.init_model(sess, False)
+
+        predict, cropped = windows(img_path, win_width, win_height, model)
+
+        plotter.plot(cropped, lbl, predict)
