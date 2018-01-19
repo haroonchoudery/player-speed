@@ -66,10 +66,12 @@ def __init__():
     img_path = 'window_images/frame_001197.jpg'
     win_width = R_WIDTH
     win_height = R_HEIGHT
+
     model = cnn.init_model(sess, True)
+
     lbl = [0.82421875,0.6649305555555556,0.705078125,0.8506944444444444,0.2138671875,0.7552083333333334,0.392578125,0.5954861111111112]
 
 
     predict, cropped = windows(img_path, win_width,win_height,model)
     
-    plotter.plot(cropped, lbl, lgt)
+    plotter.plot(cropped, lbl, predict)
