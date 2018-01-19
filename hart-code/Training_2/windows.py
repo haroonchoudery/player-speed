@@ -43,6 +43,7 @@ def windows(img_path,win_width,win_height,model):
 
     basewidth = 288 # original image base*2
 
+    predictions = []
     for i in range(0, numXWin):
         for j in range(0, numYWin):
             cropX = i * winXIncrement
@@ -55,6 +56,11 @@ def windows(img_path,win_width,win_height,model):
             # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
 
 
-            model.predict
+
+            predictions.append(model.predict)
+
+            #find center of window
+            window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
+
 def __init__():
     model = cnn.init_model(sess, True)
