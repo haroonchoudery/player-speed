@@ -37,15 +37,3 @@ def to_px(coord, width, height):
 
 def show_warped(img_out):
     plt.imshow(img_out)
-
-if __name__ == '__main__':
-    graph = tf.Graph()
-
-    with tf.Session(graph = graph) as sess:
-        init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-        # Initialize the variables (the trained variables and the epoch counter).
-        sess.run(init_op)
-        model = cnn.init_model(sess, False)
-
-        predict = windows(img,win_width,win_height,model)
-        plotter.plot(img, lbl, predict)
