@@ -1,3 +1,5 @@
+from init import *
+import tensorflow as tf
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
@@ -21,8 +23,8 @@ def windows(img_path,win_width,win_height,model):
     img = cv2.imread(img_path)
     height, width, channels = img.shape
 
-    imgWidth = width / 2
-    imgHeight = height / 2
+    imgWidth = int(width / 2)
+    imgHeight = int(height / 2)
 
     img = cv2.resize(img, (imgWidth, imgHeight), interpolation=cv2.INTER_CUBIC)
 
@@ -46,8 +48,8 @@ def windows(img_path,win_width,win_height,model):
 
     for i in range(0, numXWin):
         for j in range(0, numYWin):
-            cropX = i * winXIncrement
-            cropY = j * winYIncrement
+            cropX = int(i * winXIncrement)
+            cropY = int(j * winYIncrement)
             cropped = img[cropX:cropX+windowWidth,cropY:cropY+windowHeight,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
 
             # #now we scale the cropped image
@@ -55,7 +57,7 @@ def windows(img_path,win_width,win_height,model):
             #  hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
             # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
 
-            predict = model.predict(cropped)
+            predict = model.predict(np.expand_dims(cropped, 0))
 
             if np.mean(predict) > 0:
                 return predict, cropped
@@ -63,12 +65,15 @@ def windows(img_path,win_width,win_height,model):
             #find center of window
             #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
 
-def __init__():
+if __name__ == '__main__':
+    print("it's working")
     img_path = 'window_images/frame_001197.jpg'
     win_width = R_WIDTH
     win_height = R_HEIGHT
 
     lbl = [0.82421875,0.6649305555555556,0.705078125,0.8506944444444444,0.2138671875,0.7552083333333334,0.392578125,0.5954861111111112]
+
+    graph = tf.Graph()
 
     with tf.Session(graph = graph) as sess:
         init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
