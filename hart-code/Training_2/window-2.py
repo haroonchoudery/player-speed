@@ -46,21 +46,24 @@ def windows(img_path,win_width,win_height,model):
 
     basewidth = 288 # original image base*2
 
+    predict = -100
+
     for i in range(0, numXWin):
         for j in range(0, numYWin):
             cropX = int(i * winXIncrement)
             cropY = int(j * winYIncrement)
-            cropped = img[cropX:cropX+windowWidth,cropY:cropY+windowHeight,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
-
-            # #now we scale the cropped image
-            # wpercent = (basewidth / float(cropped.size[0]))
-            #  hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
-            # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
-
+            cropped = img[cropY:cropY+windowHeight,cropX:cropX+windowWidth,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
             predict = model.predict(np.expand_dims(cropped, 0))
+            predict_arr = predict[0]
+            pred_pix = []
 
-            if np.mean(predict) > 0:
-                return predict, cropped
+            if np.mean(predict_arr) > 0:
+                for index, pred in enumerate(predict_arr):
+                    if index % 2 == 0:
+                        pred_pix.append((pred * R_WIDTH) + cropX)
+                    else:
+                        pred_pix.append((pred * R_HEIGHT) + cropY)
+                return pred_pix, cropped 
 
             #find center of window
             #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
@@ -82,5 +85,4 @@ if __name__ == '__main__':
         model = cnn.init_model(sess, False)
 
         predict, cropped = windows(img_path, win_width,win_height,model)
-
         plotter.plot(cropped, lbl, predict)
