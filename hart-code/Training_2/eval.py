@@ -50,6 +50,7 @@ def show_prediction(images, labels, show_labels):
 					# 	img = img / 255.0
 
 					lgt = model.predict(img, BATCH_SIZE)
+					# lgt = windows(img,R_WIDTH,R_HEIGHT,model)
 					# img = img * 255
 					# img = img.astype(np.uint8)
 

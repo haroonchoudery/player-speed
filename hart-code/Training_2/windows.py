@@ -1,4 +1,6 @@
-
+from init import *
+import tensorflow as tf
+import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
@@ -11,17 +13,17 @@ import imgaug as ia
 from scipy import misc
 from imgaug import augmenters as iaa
 import random
+import cnn
 import plotter
 import PIL
 from PIL import Image
 
-def windows(img_path,win_width,win_height,model):
+def windows(img,win_width,win_height,model):
 
-    img = cv2.imread(img_path)
     height, width, channels = img.shape
 
-    imgWidth = width / 2
-    imgHeight = height / 2
+    imgWidth = int(width / 2)
+    imgHeight = int(height / 2)
 
     img = cv2.resize(img, (imgWidth, imgHeight), interpolation=cv2.INTER_CUBIC)
 
@@ -43,45 +45,44 @@ def windows(img_path,win_width,win_height,model):
 
     basewidth = 288 # original image base*2
 
-    predictions = []
+    predict = -100
+
     for i in range(0, numXWin):
         for j in range(0, numYWin):
-            cropX = i * winXIncrement
-            cropY = j * winYIncrement
-            cropped = img[cropX:cropX+windowWidth,cropY:cropY+windowHeight,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
+            cropX = int(i * winXIncrement)
+            cropY = int(j * winYIncrement)
+            cropped = img[cropY:cropY+windowHeight,cropX:cropX+windowWidth,: ] # crop image from cropX to cropX+windowWidth and from cropY to cropY+windowHeight
+            predict = model.predict(np.expand_dims(cropped, 0))
+            predict_arr = predict[0]
+            pred_pix = []
 
-            # #now we scale the cropped image
-            # wpercent = (basewidth / float(cropped.size[0]))
-            #  hsize = int((float(cropped.size[1]) * float(wpercent))) #find a height proportional to the width
-            # scaled_img = cropped.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+            if np.mean(predict_arr) > 0:
+                for index, pred in enumerate(predict_arr):
+                    if index % 2 == 0:
+                        pred_pix.append((pred * R_WIDTH + cropX) / width)
+                    else:
+                        pred_pix.append((pred * R_HEIGHT + cropY) / height)
 
-
-            predict = model.predict(cropped)
-            predictions.append(predict)
-            for prediction in predictions:
-                if all(points > 0 for points in prediction):
-                    bestCropX = cropX
-                    bestCropY = cropY
-                    bestPredictions = prediction
-                    return predict, cropped
+                return pred_pix
 
             #find center of window
             #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
 
-def __init__():
-    img_path = 'window_images/frame_001197.jpg'
+if __name__ == '__main__':
+    img_path = 'window_images/frame_000146.jpg'
+    img = cv2.imread(img_path)
     win_width = R_WIDTH
     win_height = R_HEIGHT
 
-    lbl = [0.82421875, 0.6649305555555556, 0.705078125, 0.8506944444444444, 0.2138671875, 0.7552083333333334,
-           0.392578125, 0.5954861111111112]
+    lbl = [0.84125,0.57,0.71,0.88, 0.13625,0.7466666666666667,0.35,0.47]
 
-    with tf.Session(graph=graph) as sess:
+    graph = tf.Graph()
+
+    with tf.Session(graph = graph) as sess:
         init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
         # Initialize the variables (the trained variables and the epoch counter).
         sess.run(init_op)
         model = cnn.init_model(sess, False)
 
-        predict, cropped = windows(img_path, win_width, win_height, model)
-
-        plotter.plot(cropped, lbl, predict)
+        predict = windows(img,win_width,win_height,model)
+        plotter.plot(img, lbl, predict)

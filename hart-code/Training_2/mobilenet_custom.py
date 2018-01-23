@@ -51,7 +51,7 @@ class MobileNetCustom():
 
 	def pool_and_classify(self):
 		model = self.model
-		model.add(AveragePooling2D(pool_size=(7,7),strides=(1,1)))
+		model.add(AveragePooling2D(pool_size=(2,2),strides=(1,1)))
 		model.add(Flatten())
 		model.add(Dense(self.classes))
 		#model.add(Activation('relu')) #was 'softmax'
