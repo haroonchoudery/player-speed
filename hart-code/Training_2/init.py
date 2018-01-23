@@ -20,7 +20,7 @@ if not 'NUM_CLASSES' in globals():
     WIDTH,HEIGHT = 800,300
     R_WIDTH,R_HEIGHT = 400,150
     CHANNELS = 3
-    AUGMENT = True
+    AUGMENT = False
     USE_DEPTH = False
     BATCH_SIZE = 32
     NUM_EPOCHS = 1000 # 10000
