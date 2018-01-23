@@ -18,9 +18,8 @@ import plotter
 import PIL
 from PIL import Image
 
-def windows(img_path,win_width,win_height,model):
+def windows(img,win_width,win_height,model):
 
-    img = cv2.imread(img_path)
     height, width, channels = img.shape
 
     imgWidth = int(width / 2)
@@ -60,17 +59,18 @@ def windows(img_path,win_width,win_height,model):
             if np.mean(predict_arr) > 0:
                 for index, pred in enumerate(predict_arr):
                     if index % 2 == 0:
-                        pred_pix.append((pred * R_WIDTH) + cropX)
+                        pred_pix.append((pred * R_WIDTH + cropX) / width)
                     else:
-                        pred_pix.append((pred * R_HEIGHT) + cropY)
-                return pred_pix, cropped 
+                        pred_pix.append((pred * R_HEIGHT + cropY) / height)
+
+                return pred_pix
 
             #find center of window
             #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
 
 if __name__ == '__main__':
-    print("it's working")
     img_path = 'window_images/frame_001197.jpg'
+    img = cv2.imread(img_path)
     win_width = R_WIDTH
     win_height = R_HEIGHT
 
@@ -84,5 +84,5 @@ if __name__ == '__main__':
         sess.run(init_op)
         model = cnn.init_model(sess, False)
 
-        predict, cropped = windows(img_path, win_width,win_height,model)
-        plotter.plot(cropped, lbl, predict)
+        predict = windows(img,win_width,win_height,model)
+        plotter.plot(img, lbl, predict)
