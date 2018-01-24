@@ -10,7 +10,7 @@ def homography(img, predictions):
     r_court = [[750, 330], [750, 170], [938, 170], [938, 330]]
 
     predictions = np.reshape(predictions, [4, 2])
-    predictions = to_px(predictions, width, height)
+    predictions = np.array(to_px(predictions, width, height))
 
     FT_L = predictions[0]
     FT_R = predictions[1]
@@ -18,9 +18,9 @@ def homography(img, predictions):
     BL_L = predictions[3]
 
     if FT_L[0] > BL_L[0]:
-        be = l_court
+        be = np.array(l_court)
     else:
-        be = r_court
+        be = np.array(r_court)
 
     h, status = cv2.findHomography(predictions, be)
     img_out = cv2.warpPerspective(img, h, (be_img.shape[1],be_img.shape[0]))
@@ -36,4 +36,7 @@ def to_px(coord, width, height):
     return px_coord
 
 def show_warped(img_out):
-    plt.imshow(img_out)
+    print('its working')
+    cv2.imshow('warped image',img_out)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
