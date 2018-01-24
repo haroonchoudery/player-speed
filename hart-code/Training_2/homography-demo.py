@@ -22,35 +22,33 @@ for root, dirs, files in os.walk(local_directory):
 batch_length = len(batch)
 
 for frame, val in enumerate(batch):
-    img_path = val[0]
-    kp_path = val[1]
+	img_path = val[0]
+	kp_path = val[1]
 
-    img = cv2.imread(img_path)
-    height, width, channels = img.shape
-    df = pd.read_csv(kp_path, header=None, names = ["name", "x", "y"])
-    rows = df.values
+	img = cv2.imread(img_path)
+	height, width, channels = img.shape
+	df = pd.read_csv(kp_path, header=None, names = ["name", "x", "y"])
+	rows = df.values
 
-    kp = []
-    for i in range(4):
-    	kp.append([])
+	kp = []
+	for i in range(4):
+		kp.append([])
 
-    index = 0
+	index = 0
 
-    for row in rows:
-        name = row[0]
-        if name != "img":
-        	xf = float(row[1])
-        	yf = float(row[2])
+	for row in rows:
+		name = row[0]
+		if name != "img":
+			xf = float(row[1])
+			yf = float(row[2])
 
-        	x = int(xf * width)
-        	y = int(yf * height)
+			x = int(xf * width)
+			y = int(yf * height)
 
-        	# kp = Keypoints (pixel coordinates)
-        	kp[index] = [x,y]
-        	index += 1
+			# kp = Keypoints (pixel coordinates)
+			kp[index] = [x,y]
+			index += 1
 
-    kp = np.array(kp)
-
-    img_out = homography(img, kp)
-
-    show_warped(img_out)
+	kp = np.array(kp)
+	img_out = homography(img, kp)
+	show_warped(img_out)
