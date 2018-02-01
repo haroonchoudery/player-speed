@@ -32,7 +32,7 @@ def get_total_images():
 
 seq = iaa.Sequential([
 	iaa.Crop(px=(0, 16)), # crop images from each side by 0 to 16px (randomly chosen)
-	iaa.Fliplr(0.5), # horizontally flip 50% of the images
+	# iaa.Fliplr(0.5), # horizontally flip 50% of the images
 	#iaa.PerspectiveTransform(scale=(0.01, 0.075)),
 	iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
 	#iaa.Add((-10, 10)),#, per_channel=0.5), # change brightness of images (by -10 to 10 of original value)
