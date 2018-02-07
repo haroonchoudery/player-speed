@@ -8,8 +8,8 @@ import tempfile
 
 from datetime import datetime
 
-# from mobilenet_custom import MobileNetCustom
-from xception_custom import Xception
+from mobilenet_custom import MobileNetCustom
+# from xception_custom import Xception
 
 import keras
 
@@ -28,7 +28,7 @@ from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block
 def build_model():
 	input_shape = (R_HEIGHT, R_WIDTH, CHANNELS)
 	#if CHANNELS == 1: input_shape = (WIDTH,HEIGHT)
-	model = Xception(include_top=True, weights=None, input_tensor=None, input_shape=input_shape, pooling=None, classes=NUM_CLASSES)
+	model = MobileNetCustom(size=input_shape, classes=NUM_CLASSES).model
 	# model = mobile_net(
 	# 	input_shape=None,
 	# 	alpha=2.0,
