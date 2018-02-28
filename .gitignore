@@ -3,6 +3,7 @@
 *.pyc
 *.record
 *.h5py
+*.h5
 
 # ignore DS_Store
 .DS_Store
