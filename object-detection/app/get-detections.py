@@ -88,7 +88,7 @@ def get_detections_video(video):
         else:
             detections = np.concatenate((detections, detection))
 
-	print("Detections extracted from image {}".format(count))
+        print("Detections extracted from image {}".format(count))
 
         count += 1
 
