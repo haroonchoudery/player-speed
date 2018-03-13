@@ -5,6 +5,7 @@ import coco
 import utils
 import model as modellib
 import visualize
+import pickle
 
 # Mask-R-CNN
 MASKRCNN_DIR = 'maskrcnn'
@@ -97,3 +98,9 @@ def get_detections_video(video):
     
 if __name__ == '__main__':    
     detections = get_detections_video(video)
+
+    with open('detections.pickle', 'wb') as handle:
+        pickle.dump(detections, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    # with open('detections.pickle', 'rb') as handle:
+        # detections = pickle.load(handle)
