@@ -68,38 +68,42 @@ def get_detections_frame(image, frame_idx):
 
 def get_detections_video(video):
     """
-    Get ROI detections from video using Mask-R-CNN and save in
+    Get ROI detections from video using Mask-R-CNN and save in 
     MOTChallenge format
-    """
+    """    
     camera = cv2.VideoCapture(video)
     num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
     success,image = camera.read()
     count = 0
     success = True
-
-
+    det_file = open('detections.txt', 'ab')
+    
     while success:
         success,image = camera.read()
         print("Processing image {}".format(count))
         detection = get_detections_frame(image, count)
-
-        if count == 0:
-            detections = detection
-        else:
-            detections = np.concatenate((detections, detection))
-
+        
+        np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
         print("Detections extracted from image {}".format(count))
 
+#         if count == 0:
+#             detections = detection
+#         else:
+#             detections = np.concatenate((detections, detection))
+            
         count += 1
-
-    return detections
+        det_file.flush()
+        
+    det_file.close()
+    
+    print("Finished!")
 
 
 if __name__ == '__main__':
     detections = get_detections_video(video)
 
-    with open('detections.pickle', 'wb') as handle:
-        pickle.dump(detections, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#    with open('detections.pickle', 'wb') as handle:
+#        pickle.dump(detections, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # with open('detections.pickle', 'rb') as handle:
-        # detections = pickle.load(handle)
+#    with open('detections.pickle', 'rb') as handle:
+#        detections = pickle.load(handle)
