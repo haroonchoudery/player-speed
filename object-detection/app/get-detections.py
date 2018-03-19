@@ -16,6 +16,20 @@ VIDEO_DIR = 'videos'
 VIDEO_FILE = 'transition.mp4'
 video = os.path.join(VIDEO_DIR, VIDEO_FILE)
 
+class InferenceConfig(coco.CocoConfig):
+    # Set batch size to 1 since we'll be running inference on
+    # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+
+config = InferenceConfig()
+
+# Create model object in inference mode.
+model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
+
+# Load weights trained on MS-COCO
+model.load_weights(COCO_MODEL_PATH, by_name=True)
+
 def to_mot_format(frame_idx, coord):
     """
     Input coordinates:
@@ -41,21 +55,7 @@ def to_mot_format(frame_idx, coord):
 
     return coord
 
-def get_detections_frame(image, frame_idx):
-    class InferenceConfig(coco.CocoConfig):
-        # Set batch size to 1 since we'll be running inference on
-        # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
-        GPU_COUNT = 1
-        IMAGES_PER_GPU = 1
-
-    config = InferenceConfig()
-
-    # Create model object in inference mode.
-    model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
-
-    # Load weights trained on MS-COCO
-    model.load_weights(COCO_MODEL_PATH, by_name=True)
-
+def get_detections_frame(model, image, frame_idx):
     results = model.detect([image], verbose=0)
     rois = results[0]['rois']
 
@@ -80,8 +80,8 @@ def get_detections_video(video):
     
     while success:
         success,image = camera.read()
-        print("Processing image {}".format(count))
-        detection = get_detections_frame(image, count)
+        print("Processing image {} / {}".format(count, num_frames))
+        detection = get_detections_frame(model, image, count)
         
         np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
         print("Detections extracted from image {}".format(count))
