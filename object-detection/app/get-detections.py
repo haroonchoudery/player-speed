@@ -85,7 +85,6 @@ def get_detections_video(video):
             print("DONE")
         except:
             print("FRAME {} NOT PROCESSED")
-            continue
 
 #         if count == 0:
 #             detections = detection
