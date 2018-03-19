@@ -85,7 +85,7 @@ def get_detections_video(video):
             detection = get_detections_frame(model, image, count)
             np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
             print("DONE")
-        else:
+        except:
             print("FRAME {} NOT PROCESSED")
             continue
 
