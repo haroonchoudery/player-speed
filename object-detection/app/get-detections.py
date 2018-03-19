@@ -81,10 +81,12 @@ def get_detections_video(video):
     while success:
         success,image = camera.read()
         print("Processing image {} / {}".format(count, num_frames))
-        detection = get_detections_frame(model, image, count)
-        
-        np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
-        print("Detections extracted from image {}".format(count))
+        if count > 330:
+            print(success)
+            print(image.shape)
+            detection = get_detections_frame(model, image, count)
+            np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
+            print("Detections extracted from image {}".format(count))
 
 #         if count == 0:
 #             detections = detection
