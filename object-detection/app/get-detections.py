@@ -72,22 +72,21 @@ def get_detections_video(video):
     MOTChallenge format
     """    
     camera = cv2.VideoCapture(video)
-    fps = camera.get(cv2.CAP_PROP_FPS)
-    camera.set(cv2.CAP_PROP_FPS, fps)
     num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
-    success = True
     count = 0
     det_file = open('detections.txt', 'ab')
     
-    while success:
-        success,image = camera.read()
+    while camera.isOpened():
+        ret,image = camera.read()
         print("PROCESSING IMAGE {} / {}".format(count, num_frames))
-        try:
-            detection = get_detections_frame(model, image, count)
-            np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
-            print("DONE")
-        except:
-            print("FRAME {} NOT PROCESSED")
+        if count > 330:
+            try:
+                detection = get_detections_frame(model, image, count)
+                np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
+                print("DONE")
+            except:
+                print("FRAME {} NOT PROCESSED")
+                continue
 
 #         if count == 0:
 #             detections = detection
