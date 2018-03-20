@@ -75,18 +75,17 @@ def get_detections_video(video):
     num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
     count = 0
     det_file = open('detections.txt', 'ab')
+    success = True
     
-    while camera.isOpened():
-        ret,image = camera.read()
+    while success:
+        success,image = camera.read()
         print("PROCESSING IMAGE {} / {}".format(count, num_frames))
-        if count > 330:
-            try:
-                detection = get_detections_frame(model, image, count)
-                np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
-                print("DONE")
-            except:
-                print("FRAME {} NOT PROCESSED")
-                continue
+        try:
+            detection = get_detections_frame(model, image, count)
+            np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
+            print("DONE")
+        except:
+            print("FRAME {} NOT PROCESSED")
 
 #         if count == 0:
 #             detections = detection
