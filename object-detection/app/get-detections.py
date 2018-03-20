@@ -75,11 +75,12 @@ def get_detections_video(video):
     fps = camera.get(cv2.CAP_PROP_FPS)
     camera.set(cv2.CAP_PROP_FPS, fps)
     num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
+    success = True
     count = 0
     det_file = open('detections.txt', 'ab')
     
-    while camera.isOpened():
-        ret,image = camera.read()
+    while success:
+        success,image = camera.read()
         print("PROCESSING IMAGE {} / {}".format(count, num_frames))
         try:
             detection = get_detections_frame(model, image, count)
