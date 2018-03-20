@@ -72,6 +72,8 @@ def get_detections_video(video):
     MOTChallenge format
     """    
     camera = cv2.VideoCapture(video)
+    fps = camera.get(cv2.CAP_PROP_FPS)
+    camera.set(cv2.CAP_PROP_FPS, fps)
     num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
     count = 0
     det_file = open('detections.txt', 'ab')
