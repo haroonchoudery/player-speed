@@ -1,5 +1,5 @@
 import os
-import cv2
+import skvideo.io
 import numpy as np
 import coco
 import utils
@@ -71,30 +71,21 @@ def get_detections_video(video):
     Get ROI detections from video using Mask-R-CNN and save in 
     MOTChallenge format
     """    
-    camera = cv2.VideoCapture(video)
-    num_frames = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
-    count = 0
+    videodata = skvideo.io.vread(video)
+    num_frames = len(videodata)
     det_file = open('detections.txt', 'ab')
-    success = True
     
-    while success:
-        success,image = camera.read()
-        print("PROCESSING IMAGE {} / {}".format(count, num_frames))
+    for idx, frame in enumerate(videodata):
         try:
-            detection = get_detections_frame(model, image, count)
+            print("PROCESSING IMAGE {} / {}".format(idx, num_frames))
+            detection = get_detections_frame(model, frame, idx)
             np.savetxt(det_file, detection, delimiter=',', fmt='%1.2f')
             print("DONE")
+            det_file.flush() 
         except:
-            print("FRAME {} NOT PROCESSED")
-
-#         if count == 0:
-#             detections = detection
-#         else:
-#             detections = np.concatenate((detections, detection))
-            
-        count += 1
-        det_file.flush()
-        
+            print("FRAME {} NOT PROCESSED".format(idx))
+            continue
+    
     det_file.close()
     
     print("FINISHED!")
