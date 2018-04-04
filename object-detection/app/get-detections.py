@@ -30,39 +30,51 @@ model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
 # Load weights trained on MS-COCO
 model.load_weights(COCO_MODEL_PATH, by_name=True)
 
-def to_mot_format(frame_idx, coord):
+def to_mot_format(frame_idx, coord, conf):
     """
-    Input coordinates:
+    Input coordinates: 
     (y1, x1, y2, x2)
-
-    Output coordinates:
+    
+    Output coordinates: 
     (frame, id, bb_left, bb_top, bb_width, bb_height, -1, -1, -1, -1)
     """
-    padding = np.array([-1, -1, -1, -1])
-
-    coord = np.insert(coord, 0, frame_idx)
-    coord = np.insert(coord, 1, -1)
-    coord = np.append(coord, padding)
-
-    width = coord[5] - coord[3]
-    height = coord[4] - coord[2]
-
-    coord[4] = width
-    coord[5] = height
+    filler = -1
+    bb_left = coord[1]
+    bb_top = coord[0]
+    bb_width = coord[3] - coord[1]
+    bb_height = coord[2] - coord[0]
 
     # Rearrange coordinates
-    coord = coord[[0, 1, 3, 2, 4, 5, 6, 7, 8, 9]]
-
+    coord = np.array([frame_idx + 1, 
+                      filler,
+                      bb_left,
+                      bb_top,
+                      bb_width,
+                      bb_height,
+                      conf,
+                      filler,
+                      filler,
+                      filler])
+    
     return coord
 
 def get_detections_frame(model, image, frame_idx):
     results = model.detect([image], verbose=0)
-    rois = results[0]['rois']
+    
+    rois_all = results[0]['rois']
+    confs_all = results[0]['scores']
+    class_ids_all = results[0]['class_ids']
+    num_detections = len(rois_all)        
+    
+    # Only use ROIs and confidence levels for people detections
+    rois = [rois_all[p] for p in range(num_detections) if class_ids_all[p] == 1]
+    confs = [confs_all[p] for p in range(num_detections) if class_ids_all[p] == 1]    
 
     detections = np.zeros([len(rois), 10])
 
     for idx, coord in enumerate(rois):
-        detections[idx] = to_mot_format(frame_idx, coord)
+        conf = confs[idx]
+        detections[idx] = to_mot_format(frame_idx, coord, conf)
 
     return detections
 

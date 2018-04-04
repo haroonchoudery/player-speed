@@ -18,6 +18,8 @@ import skimage.color
 import skimage.io
 import urllib.request
 import shutil
+import uuid
+import cv2
 
 # URL from which to download the latest COCO trained weights
 COCO_MODEL_URL = "https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5"
@@ -727,3 +729,43 @@ def download_trained_weights(coco_model_path, verbose=1):
         shutil.copyfileobj(resp, out)
     if verbose > 0:
         print("... done downloading pretrained model!")
+
+        
+"""
+Haroon Custom Functions
+"""        
+
+def get_detection_bottom_center(tlwh_array):
+    """
+    Takes tlwh array and return the pixel coordinates for 
+    bottom, center of bounding box
+    """
+    top, left, width, height = tlwh
+    bottom = top + height
+    center = left + width / 2
+    
+    coord = np.hstack([center, bottom])
+    
+    return coord
+
+def crop_boxes(img, boxes, dst_dir):
+    # Pad image
+    img_height, img_width, channels = img.shape
+    impad = int(img_width / 10)
+    
+    new_img = cv2.copyMakeBorder(img, impad, impad, impad, impad, cv2.BORDER_CONSTANT, (0,0,0))
+    
+    for bbox in boxes:
+        tlx = bbox[0] + impad
+        tly = bbox[1] + impad
+        width = bbox[2]
+        height = bbox[3]
+        
+        pad = 5
+        crop_img = new_img[int(tly-pad):int(tly+height+pad),
+                       int(tlx-pad):int(tlx+width+pad)]
+        
+        # Choose random filename
+        filename = os.path.join(dst_dir, str(uuid.uuid4())+'.jpg')
+        skimage.io.imsave(filename, crop_img)
+    
