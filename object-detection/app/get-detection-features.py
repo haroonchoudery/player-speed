@@ -1,5 +1,5 @@
 import os
-import generate_detections
+import deep_sort.generate_detections
 import deep_sort.detection
 import numpy as np
 import skvideo.io

@@ -1,7 +1,7 @@
 import os
 import skvideo.io
 import numpy as np
-import coco
+import deep_sort.coco
 import utils
 import model as modellib
 import visualize
@@ -9,8 +9,8 @@ import pickle
 
 # Mask-R-CNN
 MASKRCNN_DIR = 'maskrcnn'
-MODEL_DIR = os.path.join("logs")
-COCO_MODEL_PATH = os.path.join("mask_rcnn_coco.h5")
+MODEL_DIR = os.path.join('resources','logs')
+COCO_MODEL_PATH = os.path.join(MODEL_DIR, 'mask_rcnn_coco.h5')
 
 VIDEO_DIR = 'videos'
 VIDEO_FILE = 'transition.mp4'
