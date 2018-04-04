@@ -55,7 +55,7 @@ def tracking(detections_file, crop = False):
 
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
-        if (crop):
+        if (crop and frame_idx > 150 and frame_idx <170):
             crop_boxes(frame, boxes, dst_dir)
         
         scores = np.array([d.confidence for d in detections])
