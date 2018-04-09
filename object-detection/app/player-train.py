@@ -8,10 +8,11 @@ import keras
 from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+import os
 
 def train(training_img_path, test_img_path):
 
-    batch_size = 32
+    batch_size = 16
     input_shape = (224,224,3)
     NUM_CLASSES = 2
 
@@ -41,7 +42,8 @@ def train(training_img_path, test_img_path):
             target_size=(224, 224),
             batch_size=batch_size,
             class_mode='binary')
-    model = customNN(size=input_shape, classes=NUM_CLASSES).model
+    
+    model = customNN(size=input_shape, classes=NUM_CLASSES - 1).model
 
     model.compile(optimizer='adam',
                   loss='binary_crossentropy',
@@ -49,8 +51,13 @@ def train(training_img_path, test_img_path):
 
     model.fit_generator(
         train_generator,
-        steps_per_epoch=2000 // batch_size,
-        epochs=50,
+        steps_per_epoch=320 // batch_size,
+        epochs=10,
         validation_data=validation_generator,
-        validation_steps=800 // batch_size)
-    model.save_weights('first_try.h5')  # always save your weights after training or during training
+        validation_steps=206 // batch_size)
+    model.save_weights(os.path.join('resources', 'logs', 'mobilenet_custom.h5'))
+    
+if __name__ == '__main__':
+    train_path = os.path.join('data', 'train')
+    test_path = os.path.join('data', 'test')
+    train(train_path, test_path)

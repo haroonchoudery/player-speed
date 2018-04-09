@@ -768,4 +768,33 @@ def crop_boxes(img, boxes, dst_dir):
         # Choose random filename
         filename = os.path.join(dst_dir, str(uuid.uuid4())+'.jpg')
         skimage.io.imsave(filename, crop_img)
+        
+        
+def get_cropped_imgs(img, boxes):
+    # Pad image
+    img_height, img_width, channels = img.shape
+    impad = int(img_width / 10)
+    
+    out_height = 224
+    out_width = 224
+    
+    new_img = cv2.copyMakeBorder(img, impad, impad, impad, impad, cv2.BORDER_CONSTANT, (0,0,0))
+    
+    cropped_imgs = np.zeros([len(boxes), out_height, out_width, channels])
+    
+    for idx, bbox in enumerate(boxes):
+        tlx = bbox[0] + impad
+        tly = bbox[1] + impad
+        width = bbox[2]
+        height = bbox[3]
+        
+        pad = 5
+        crop_img = new_img[int(tly-pad):int(tly+height+pad),
+                       int(tlx-pad):int(tlx+width+pad)]
+        
+        resized_img = cv2.resize(crop_img, (out_height, out_width))
+        
+        cropped_imgs[idx] = resized_img
+        
+    return cropped_imgs
     

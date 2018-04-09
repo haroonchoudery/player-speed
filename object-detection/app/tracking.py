@@ -7,7 +7,8 @@ from deep_sort import nn_matching
 from deep_sort.deep_sort_app import create_detections
 from deep_sort.application_util import preprocessing
 from deep_sort.tracker import Tracker
-from utils import get_detection_bottom_center, crop_boxes
+from utils import get_detection_bottom_center, crop_boxes, get_cropped_imgs
+from player_model import get_model
 
 def get_cmap(n, name='hsv'):
     '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
@@ -44,6 +45,11 @@ def tracking(detections_file, crop = False):
     if (display):
         plt.ion()
         fig = plt.figure()
+        
+    
+    # Load Model
+    model = get_model()
+    model.load_weights(os.path.join('resources', 'logs', 'custom_model.h5'))
 
     for frame_idx in range(min_frame_idx, max_frame_idx + 1):
         print("Processing frame {}".format(frame_idx))
@@ -55,6 +61,18 @@ def tracking(detections_file, crop = False):
 
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
+        
+        cropped_imgs = get_cropped_imgs(frame, boxes)
+        y_prob = model.predict_on_batch(cropped_imgs)
+        
+        player_mask = []
+        
+        for idx, prob in enumerate(y_prob):
+            if prob > 0.8:
+                player_mask.append(idx)
+            
+        detections = [detections[i] for i in player_mask]
+        
         if (crop and frame_idx > 150 and frame_idx <170):
             crop_boxes(frame, boxes, dst_dir)
         
@@ -93,4 +111,4 @@ def tracking(detections_file, crop = False):
             ax1.cla()
             
 if __name__ == '__main__':
-    tracking('generated_detections.npy', crop=True)
+    tracking('generated_detections.npy', crop=False)

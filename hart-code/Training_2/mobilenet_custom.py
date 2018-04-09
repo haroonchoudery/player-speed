@@ -7,7 +7,7 @@ from keras import backend as K
 
 class MobileNetCustom():
 	classes = 1000
- 
+
 	def mobile_block(self, filter_1, filter_2):
 		model = self.model
 		model.name = "mobilenet_custom"

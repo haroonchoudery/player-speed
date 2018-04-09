@@ -20,6 +20,7 @@ from tensorflow.python.keras._impl.keras.layers import Input
 from tensorflow.python.keras._impl.keras.layers import MaxPooling2D
 from tensorflow.python.keras._impl.keras.layers import SeparableConv2D
 from tensorflow.python.keras._impl.keras.models import Model
+from tensorflow.python.keras._impl.keras.models import Sequential
 from tensorflow.python.keras._impl.keras.utils.data_utils import get_file
 from tensorflow.python.platform import tf_logging as logging
 
@@ -28,7 +29,7 @@ class customNN():
 
     def mobile_block(self, filter_1, filter_2):
         model = self.model
-        model.name = "mobilenet_custom"
+#        model.name = "customNN"
         model.add(SeparableConv2D(filter_1, kernel_size=(3, 3), strides=(1, 1), padding='same'))  #
         model.add(BatchNormalization())
         model.add(Activation('relu'))
@@ -72,6 +73,7 @@ class customNN():
         model.add(AveragePooling2D(pool_size=(2, 2), strides=(1, 1)))
         model.add(Flatten())
         model.add(Dense(self.classes))
+        model.add(Activation('softmax'))
 
     def __init__(self, size=(224, 224, 3), classes=(2)):
         self.classes = classes
