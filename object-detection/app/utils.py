@@ -735,7 +735,7 @@ def download_trained_weights(coco_model_path, verbose=1):
 Haroon Custom Functions
 """        
 
-def get_detection_bottom_center(tlwh_array):
+def get_detection_bc(tlwh_array):
     """
     Takes tlwh array and return the pixel coordinates for 
     bottom, center of bounding box
@@ -797,4 +797,3 @@ def get_cropped_imgs(img, boxes):
         cropped_imgs[idx] = resized_img
         
     return cropped_imgs
-    

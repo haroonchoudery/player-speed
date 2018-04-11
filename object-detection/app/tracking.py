@@ -7,7 +7,7 @@ from deep_sort import nn_matching
 from deep_sort.deep_sort_app import create_detections
 from deep_sort.application_util import preprocessing
 from deep_sort.tracker import Tracker
-from utils import get_detection_bottom_center, crop_boxes, get_cropped_imgs
+from utils import get_detection_bc, crop_boxes, get_cropped_imgs
 from player_model import get_model
 
 def get_cmap(n, name='hsv'):
@@ -65,15 +65,17 @@ def tracking(detections_file, crop = False):
         cropped_imgs = get_cropped_imgs(frame, boxes)
         y_prob = model.predict_on_batch(cropped_imgs)
         
+        print(y_prob)
+        
         player_mask = []
         
         for idx, prob in enumerate(y_prob):
             if prob > 0.8:
                 player_mask.append(idx)
-            
+                
         detections = [detections[i] for i in player_mask]
         
-        if (crop and frame_idx > 150 and frame_idx <170):
+        if (crop and frame_idx > 150 and frame_idx < 170):
             crop_boxes(frame, boxes, dst_dir)
         
         scores = np.array([d.confidence for d in detections])
