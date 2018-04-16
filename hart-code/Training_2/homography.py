@@ -24,6 +24,7 @@ def homography(img, predictions):
 
     h, status = cv2.findHomography(predictions, be)
     img_out = cv2.warpPerspective(img, h, (be_img.shape[1],be_img.shape[0]))
+    print(h.shape)
 
     return img_out
 
