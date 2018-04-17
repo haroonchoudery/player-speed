@@ -18,14 +18,14 @@ import plotter
 import PIL
 from PIL import Image
 
-def windows(img,win_width,win_height,model):
+def windows(img,model):
 
     height, width, channels = img.shape
 
-    imgWidth = int(width / 2)
-    imgHeight = int(height / 2)
+    imgWidth = width # int(width / 2)
+    imgHeight = height # int(height / 2)
 
-    img = cv2.resize(img, (imgWidth, imgHeight), interpolation=cv2.INTER_CUBIC)
+    # img = cv2.resize(img, (imgWidth, imgHeight), interpolation=cv2.INTER_CUBIC)
 
     windowWidth = R_WIDTH
     windowHeight = R_HEIGHT
@@ -56,7 +56,9 @@ def windows(img,win_width,win_height,model):
             predict_arr = predict[0]
             pred_pix = []
 
-            if np.mean(predict_arr) > 0:
+            print(pred_arr)
+
+            if all(predict_arr) > 0:
                 for index, pred in enumerate(predict_arr):
                     if index % 2 == 0:
                         pred_pix.append((pred * R_WIDTH + cropX) / width)
@@ -65,11 +67,11 @@ def windows(img,win_width,win_height,model):
 
                 return pred_pix
 
-            #find center of window
-            #window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
+            # find center of window
+            window_center = [(cropX+cropX+windowWidth)/2,(cropY+cropY+windowHeight)/2]
 
 if __name__ == '__main__':
-    img_path = 'window_images/frame_000146.jpg'
+    img_path = 'window_images/frame_001197.jpg'
     img = cv2.imread(img_path)
     win_width = R_WIDTH
     win_height = R_HEIGHT
@@ -84,5 +86,5 @@ if __name__ == '__main__':
         sess.run(init_op)
         model = cnn.init_model(sess, False)
 
-        predict = windows(img,win_width,win_height,model)
+        predict = windows(img,model)
         plotter.plot(img, lbl, predict)
