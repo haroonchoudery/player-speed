@@ -1,7 +1,5 @@
-import os
-import numpy as np
-import time
+WIN_X_SCALER = 0.7
+WIN_Y_SCALER = 0.5
 
-if not 'NUM_WIN_X' or 'NUM_WIN_Y' in globals():
-    NUM_WIN_X = 10
-    NUM_WIN_Y = 5
+NUM_WIN_X = 10
+NUM_WIN_Y = 5
