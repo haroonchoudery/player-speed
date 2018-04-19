@@ -9,151 +9,60 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
-import math
 import random
 import time
 from object_detection.utils import dataset_util
-
 import imgaug as ia
-from scipy import misc
-from imgaug import augmenters as iaa
-import random
 import plotter
 #np.set_printoptions(threshold=np.nan)
 
 
-imageDim = WIDTH
-
-
 def create_tf_example(img_path, kp_path):
-	img = cv2.imread(img_path, 3)
+	if CHANNELS == 1:
+		img_in = cv2.imread(img_path, 0)
+		height, width = img_in.shape
+	else:
+		img_in = cv2.imread(img_path, 3)
+		height, width, channels = img_in.shape
 
 	df = pd.read_csv(kp_path, header=None, names = ["name", "x", "y"])
-	#  df = df.sort_values(['name'])
 	rows = df.values
-
-	kp = [];
-	for i in range(NUM_POINTS):
-		kp.append([])
-
-
-	height, width, channels = img.shape
-	impad = int(width / 2) # int(width / 10)
-
 	index = 0
 
+	joints = []
 	for row in rows:
 		name = row[0]
 		if name != "img":
-			xf = float(row[1])
-			yf = float(row[2])
-			if xf == 0 and yf == 0:
+			x = float(row[1])
+			y = float(row[2])
+			if x == 0 and y == 0:
 				x = -1
 				y = -1
-				kp[index] = [x, y]
+				joints.append(x)
+				joints.append(y)
 				index += 1
 			else:
-				x = int(xf * width) + impad
-				y = int(yf * height) + impad
-
-				# kp = Keypoints (pixel coordinates)
-				kp[index] = [x,y]
+				joints.append(x)
+				joints.append(x)
 				index += 1
 
-	#make a condition for images with no keypoints
-	if all(point[0] == -1 and point[1] == -1 for point in kp):
-
-		crop_img = cv2.resize(img, (R_WIDTH, R_HEIGHT), interpolation=cv2.INTER_CUBIC)
-		joints = []
-		for i, row in enumerate(kp):
-			tx = -1
-			ty = -1
-			joints.append(tx)
-			joints.append(ty)
-
-		crop_img = crop_img.astype(np.uint8)
-
-	else:
-		scale = WIDTH/width
-
-		img = cv2.copyMakeBorder(img, impad, impad, impad, impad, cv2.BORDER_CONSTANT, (0,0,0))
-		imgHeight, imgWidth, channels = img.shape
-
-		x = []
-		y = []
-
-		for coord in kp:
-			x.append(coord[0])
-			y.append(coord[1])
-
-		minx = min(x)
-		maxx = max(x)
-		miny = min(y)
-		maxy = max(y)
-
-		# Add dynamic padding to fill in remainder of image size (WIDTH, HEIGHT)
-		# Can be float (in case dividing by two makes padding a fraction)
-		pad_x = (WIDTH - (maxx - minx)) / 2
-		pad_y = (HEIGHT - (maxy - miny)) / 2
-
-		left_crop = round(minx - pad_x)
-		right_crop = round(maxx + pad_x)
-		top_crop = round(miny - pad_y)
-		bottom_crop = round(maxy + pad_y)
-
-		# Crop padded image with dynamic padding to fill in remaining pixels from HEIGHT and WIDTH
-		crop_img = img[top_crop:bottom_crop, left_crop:right_crop]
-		crop_img = cv2.resize(crop_img, (R_WIDTH, R_HEIGHT), interpolation=cv2.INTER_CUBIC)
-
-		# Created adjusted coordinates with cropped images
-		kpn = [];
-		for i in range(NUM_POINTS):
-			kpn.append([])
-
-		for index in range(len(kpn)):
-			x = kp[index][0] - left_crop
-			y = kp[index][1] - top_crop
-			kpn[index] = [x, y]
-
-		joints = []
-
-		scale = R_WIDTH / WIDTH
-
-		# Convert from pixel coordinates to normalized coordinates
-		for i, row in enumerate(kpn):
-			px, py = row[0], row[1]
-			tx = (float(px) * scale)/R_WIDTH
-			ty = (float(py) * scale)/R_HEIGHT
-			joints.append(tx)
-			joints.append(ty)
-
-	height  = R_HEIGHT
-	width = R_WIDTH
+	img_out = cv2.resize(img_in, (MODEL_WIDTH, MODEL_HEIGHT), interpolation=cv2.INTER_CUBIC)
+	img_out = img_out.astype(np.uint8)
 
 	DEBUG = False
 
 	if DEBUG:
 		plot_img = []
 		if CHANNELS == 1:
-			plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2GRAY)
+			plot_img = cv2.cvtColor(img_out,cv2.COLOR_BGR2GRAY)
 		else:
-			plot_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2RGB)
+			plot_img = cv2.cvtColor(img_out,cv2.COLOR_BGR2RGB)
 		plotter.plot(plot_img,joints)
-
-	crop_img = crop_img.astype(np.uint8)
-
-
-	channel_transform = cv2.COLOR_BGR2RGB
-	if CHANNELS == 1: channel_transform = cv2.COLOR_BGR2YUV
-	crop_img = cv2.cvtColor(crop_img, channel_transform)
-	if CHANNELS == 1:
-		y,u,v = cv2.split(crop_img)
-		crop_img = y
 
 	tf_example = tf.train.Example(features=tf.train.Features(feature={
 	'image/height': dataset_util.int64_feature(height),
 	'image/width': dataset_util.int64_feature(width),
-	'image/encoded': dataset_util.bytes_feature(tf.compat.as_bytes(crop_img.tostring())),
+	'image/encoded': dataset_util.bytes_feature(tf.compat.as_bytes(img_out.tostring())),
 	'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
 	'image/object/class/label': dataset_util.float_list_feature(joints)}))
 
