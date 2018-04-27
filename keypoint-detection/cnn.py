@@ -16,7 +16,8 @@ from keras.applications.mobilenet import DepthwiseConv2D#, _depthwise_conv_block
 
 
 def build_model():
-	input_shape = (R_HEIGHT, R_WIDTH, CHANNELS)
+	input_shape = (MODEL_HEIGHT, MODEL_WIDTH, CHANNELS)
+
 	#if CHANNELS == 1: input_shape = (WIDTH,HEIGHT)
 	model = MobileNetCustom(size=input_shape, classes=NUM_CLASSES).model
 
@@ -48,7 +49,7 @@ def init_model(sess, do_load_model):
 	return model
 
 def get_model_name(name):
-	return name + '_marker_' + str(CHANNELS) + '_' + str(WIDTH)
+	return name + '_marker_' + str(CHANNELS) + '_' + str(MODEL_WIDTH)
 
 def save_model(model):
 	model_name = get_model_name(model.name)

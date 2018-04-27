@@ -20,10 +20,11 @@ import plotter
 def create_tf_example(img_path, kp_path):
 	if CHANNELS == 1:
 		img_in = cv2.imread(img_path, 0)
-		height, width = img_in.shape
+		img_in = np.expand_dims(img_in, axis=-1)
 	else:
 		img_in = cv2.imread(img_path, 3)
-		height, width, channels = img_in.shape
+
+	height, width, channels = img_in.shape
 
 	df = pd.read_csv(kp_path, header=None, names = ["name", "x", "y"])
 	rows = df.values
@@ -43,7 +44,7 @@ def create_tf_example(img_path, kp_path):
 				index += 1
 			else:
 				joints.append(x)
-				joints.append(x)
+				joints.append(y)
 				index += 1
 
 	img_out = cv2.resize(img_in, (MODEL_WIDTH, MODEL_HEIGHT), interpolation=cv2.INTER_CUBIC)
@@ -54,7 +55,8 @@ def create_tf_example(img_path, kp_path):
 	if DEBUG:
 		plot_img = []
 		if CHANNELS == 1:
-			plot_img = cv2.cvtColor(img_out,cv2.COLOR_BGR2GRAY)
+			plot_img = img_out
+			# plot_img = cv2.cvtColor(img_out,cv2.COLOR_BGR2GRAY)
 		else:
 			plot_img = cv2.cvtColor(img_out,cv2.COLOR_BGR2RGB)
 		plotter.plot(plot_img,joints)

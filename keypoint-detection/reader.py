@@ -34,8 +34,8 @@ seq = iaa.Sequential([
 	#iaa.Crop(px=(0, 16)), # crop images from each side by 0 to 16px (randomly chosen)
 	#iaa.Fliplr(0.5), # horizontally flip 50% of the images
 	#iaa.PerspectiveTransform(scale=(0.01, 0.075)),
-	#iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
 	#iaa.Add((-10, 10)),#, per_channel=0.5), # change brightness of images (by -10 to 10 of original value)
+	iaa.GaussianBlur(sigma=(0, 2.0)), # blur images with a sigma of 0 to 2.0
 	iaa.Multiply((0.25, 1.5)), #, per_channel=0.5,
 	iaa.Affine(rotate=(-10, 10), scale=(0.75, 1.00)),
 	iaa.PerspectiveTransform(scale=(0.01, 0.1)) # rotate by -10 to +10 degrees, scale up to +/- 25%)
@@ -82,7 +82,6 @@ def read_and_decode(filename_queue):
 	#image = image / 255.0
 
 	img_shape = [MODEL_HEIGHT, MODEL_WIDTH, CHANNELS]
-	if CHANNELS == 1: img_shape.pop()
 	image = tf.reshape(image, img_shape)
 
 	print('Build model with input:', image.shape)

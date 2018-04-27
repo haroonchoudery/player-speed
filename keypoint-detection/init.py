@@ -8,15 +8,18 @@ PATCH_HEIGHT = 260
 CHANNELS = 1 # 1 for greyscale, 3 for color
 NUM_DATA_BATCHES = 1
 BATCH_SIZE = 32
+NUM_EPOCHS = 1000 # 10000
+LEARNING_RATE = 0.001
 
 NUM_DIMS = 2
 NUM_POINTS = 4
-AUGMENT = True
+AUGMENT = False
 NUM_CLASSES = NUM_DIMS * NUM_POINTS
 
 """ DIRECTORIES """
 DROPBOX_LOCATION = os.path.join('data')
 CHECKPOINT_DIR = os.path.join('checkpoint')
+EVAL_DIR = os.path.join('models','model','eval')
 
 """ MODEL INPUT """
 MODEL_SCALER = 0.5

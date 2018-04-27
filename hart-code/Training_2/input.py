@@ -186,7 +186,7 @@ def read_inputs(do_write):
 				if do_write:
 					tf_string = tf_example.SerializeToString()
 					rnd = random.uniform(0, 1)
-					if rnd < 0.99:
+					if rnd < 0.5:
 						train_writer.write(tf_string)
 					#elif rnd >= 0.7 and rnd < 0.85:
 					#	val_writer.write(tf_string)
