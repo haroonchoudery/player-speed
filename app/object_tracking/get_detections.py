@@ -87,7 +87,7 @@ def get_detections_frame(image, frame_idx):
         detections[idx] = to_mot_format(frame_idx, coord, conf)
 
     features = encoder(image, detections[:, 2:6].copy())
-    final_detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(detections, features)]
+    final_detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(detections[:,2:6], features)]
 
     return final_detections
 

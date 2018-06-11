@@ -20,6 +20,7 @@ from deep_sort import preprocessing
 from deep_sort.tracker import Tracker
 
 DEBUG_PREDICTIONS = False
+DISPLAY_TRACKS = True
 """
 Steps for each frame:
     KEYPOINT DETECTION
@@ -67,23 +68,27 @@ def detect_players(frame_no, frame):
 
     return detections
 
-
-if __name__ == '__main__':
+def main():
     # model = load_model()
+    max_cosine_distance = 1.0
+    nn_budget = None
+    nms_max_overlap = 1.0
+    min_confidence = 0.0
+    metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
+
+    tracker = Tracker(metric)
+
+    track_dict = {}
+    fps = 0.25 # TODO Change this
 
     for frame_no, frame in enumerate(os.listdir('test_images')):
         """Get keypoint predictions"""
         # Load frame
         frame = cv2.imread(os.path.join('test_images', frame))
 
-        max_cosine_distance = 0.3
-        nn_budget = None
-        nms_max_overlap = 1.0
-
-        metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
-        tracker = Tracker(metric)
-
         detections = detect_players(frame_no, frame)
+
+        detections = [d for d in detections if d.confidence >= min_confidence]
 
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
@@ -94,20 +99,42 @@ if __name__ == '__main__':
         tracker.update(detections)
 
         for track in tracker.tracks:
-            if track.is_confirmed() and track.time_since_update >1 :
+            if not track.is_confirmed() or track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
             cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
             cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
 
-        for det in detections:
-            bbox = det.to_tlbr()
-            cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+            # get coordinates for bottom, center of bbox
+            bbox = track.to_tlwh()
+            coord = track.to_bc()
+
+            # if track.track_id in track_dict.keys():
+            #     # find speed from difference in previous state
+            #     # using previous coordinates and previous frame_no
+            #     prev_x, prev_y = track_dict[track.track_id]
+            #     distance = np.sqrt((x_max - x_min)^2 + (y_max - y_min)^2)
+            #
+            #     num_frames = frame_no - track_dict[track.track_id][1]
+            #     time = num_frames * fps
+            #
+            #     speed = distance / time
+            #     print("Player {} is traveling at {} mph".format(track.track_id, speed))
+            #     # update latest state
+            #     track_dict[track.track_id] = [coord, frame_no]
+            # else:
+            #     track_dict[track.track_id] = [coord, frame_no]
 
 
-        cv2.imshow('', frame)
 
 
+        if DISPLAY_TRACKS:
+            # for det in detections:
+            #     bbox = det.to_tlbr()
+            #     cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+            cv2.imshow('', frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
 
 
@@ -130,3 +157,7 @@ if __name__ == '__main__':
         #
         # warped = homography.warp_frame(frame, predictions, top_left)
         # homography.show_warped(warped)
+
+
+if __name__ == '__main__':
+    main()
